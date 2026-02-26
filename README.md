@@ -38,10 +38,20 @@
 
 프론트엔드 환경 전체를 시작하려면 터미널에서 아래 명령어로 리포지토리를 다운로드하세요.
 
+**방법 A: 폴더명을 직접 지정** (원하는 이름으로 폴더 생성)
+
 ```bash
-git clone https://github.com/Hongcha-poodle/uxd-webbuilder-setup.git
-cd uxd-webbuilder-setup
+git clone https://github.com/Hongcha-poodle/uxd-webbuilder-setup.git 내-프로젝트명
+cd 내-프로젝트명
 ```
+
+**방법 B: 현재 폴더에 직접 설치** (이미 원하는 폴더 안에서 터미널 실행 시)
+
+```bash
+git clone https://github.com/Hongcha-poodle/uxd-webbuilder-setup.git .
+```
+
+> 💡 **차이점**: 방법 A는 지정한 이름으로 새 폴더를 만들어 그 안에 파일을 넣습니다. 방법 B는 URL 뒤에 `.`을 붙여 현재 디렉토리에 바로 파일을 복사합니다 (별도 하위 폴더 생성 없음).
 
 *(참고: 기존 프로젝트에 `.ai`와 `.agent` 폴더만 복사하려면 프로젝트 디렉토리에서 `setup-windows.ps1` 또는 `setup-mac.sh` 스크립트를 실행하면 됩니다.)*
 
