@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #1d1d1f;
+  background-color: #ffffff;
+  font-family: 'Pretendard', 'Noto Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
