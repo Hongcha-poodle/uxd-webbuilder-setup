@@ -11,9 +11,24 @@
 - 순서: `<script setup>` -> `<template>` -> `<style>` 순으로 작성합니다.
 - `app.vue` 및 레이아웃, 페이지 구성 시에는 내장 컴포넌트인 `<NuxtPage />` 와 파일 기반 라우팅을 활용합니다.
 
-## 에셋 참조
-- 이미지, 아이콘, 폰트 등의 정적 에셋은 `~/assets/` 경로를 통해 참조합니다.
-- `<script setup>` 블록 안에서 에셋을 명시적으로 import하여 템플릿의 `:src` 등에 바인딩할 수 있습니다. (예: `import logoImage from '~/assets/images/logo.svg'`)
+## 에셋 참조 및 폴더 구조
+
+이미지, 아이콘, 폰트 등의 정적 에셋은 `~/assets/` 경로를 통해 참조하며, 아래 Vue/Nuxt 권장 폴더 구조를 준수합니다:
+
+```
+assets/
+├── css/      # 전역 스타일시트 (예: tailwind.css)
+├── images/   # 래스터 이미지 (png, jpg, jpeg, webp, gif)
+│             # 파일명 규칙: kebab-case (예: hero-background.png)
+├── icons/    # SVG 아이콘 파일
+│             # 파일명 규칙: icon-[name].svg (예: icon-arrow.svg)
+└── fonts/    # 커스텀 폰트 파일
+```
+
+- `<script setup>` 블록 안에서 에셋을 명시적으로 import하여 템플릿의 `:src` 등에 바인딩합니다.
+  - 예: `import heroImage from '~/assets/images/hero-background.png'`
+  - 예: `import arrowIcon from '~/assets/icons/icon-arrow.svg'`
+  - 예: `import logoImage from '~/assets/images/logo.svg'`
 
 ## 이벤트 및 상태 관리
 - 상태 값은 `ref` (원시 타입) 또는 `reactive` (객체)를 명확하게 구분하여 사용합니다.

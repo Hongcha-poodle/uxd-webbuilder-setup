@@ -36,17 +36,43 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
    - 폼 요소(`input`, `checkbox` 등)에는 반드시 연결된 `id`와 `label`의 `for` 속성을 매칭하고, 필요한 경우 `aria-label`이나 보조 정보를 제공합니다.
 
 6. **에셋 참조 경로**:
-   - 이미지, 로고, 아이콘 등은 로컬에 다운로드되었다고 가정하고 `~/assets/...` 또는 `~/assets/images/...` 경로로 import 하여 사용합니다.
+   - 이미지, 로고, 아이콘 등은 로컬에 다운로드되었다고 가정하고 아래 표준 구조의 경로로 import 하여 사용합니다.
+   - 프로젝트 에셋 표준 폴더 구조 (Vue/Nuxt 권장):
+     ```
+     assets/
+     ├── css/      # 전역 스타일시트 (예: tailwind.css)
+     ├── images/   # 래스터 이미지 (png, jpg, jpeg, webp, gif) — 파일명: kebab-case
+     ├── icons/    # SVG 아이콘 파일 — 파일명: icon-[name].svg 형식 권장
+     └── fonts/    # 커스텀 폰트 파일
+     ```
+   - 예시: `import heroImage from '~/assets/images/hero-background.png'`
+   - 예시: `import arrowIcon from '~/assets/icons/icon-arrow.svg'`
 
 7. **소통 원칙**:
    - 응답 시 항상 한국어를 사용하며, 명확하고 친절한 어조를 유지합니다. 기술 용어는 영어 원문을 사용합니다.
+
+8. **컴포넌트 파일명 (Component Naming)**:
+   - Figma MCP로 노드를 추출할 때, 해당 노드의 `name` 속성(레이어명)을 **PascalCase**로 변환하여 컴포넌트 파일명으로 사용합니다.
+   - 변환 규칙: 공백·하이픈·언더스코어로 구분된 단어를 각각 대문자로 시작합니다.
+     - 예: `"login form"` → `LoginForm.vue`
+     - 예: `"primary-button"` → `PrimaryButton.vue`
+     - 예: `"Card List Item"` → `CardListItem.vue`
+   - 사용자가 명시적으로 다른 이름을 지정한 경우에만 그 이름을 우선 사용합니다.
+
+9. **컴포넌트 저장 경로 (Storage Path)**:
+   - 모든 신규 컴포넌트는 반드시 **`components/`** 폴더 루트에 저장합니다.
+   - 하위 분류가 명확히 필요한 경우 `components/[카테고리]/` 하위에 저장할 수 있으나, 기본값은 `components/` 루트입니다.
+   - 사용자가 명시적으로 다른 경로를 지시하지 않는 한 임의로 경로를 변경하지 않습니다.
 
 ## 대화 시작 시 초기 확인 (Initial Confirmations)
 
 사용자가 처음 작업 지시나 대화를 시작할 때, 본격적인 코드 생성/수정에 앞서 반드시 다음 행동을 수행합니다.
 1. **목적 확인**: 대상 작업이 **신규 Vue 컴포넌트 생성**인지, **기존 컴포넌트 수정**인지 묻고 파악합니다.
 2. **Figma Dev Mode MCP 연동**: Figma 노드 추출 시 반드시 **Figma Dev Mode MCP**를 구동하여 데이터와 컨텍스트를 수집하도록 설정합니다.
-3. **에셋 전달 가이드 제공**: 디자인 내에 디자이너가 직접 다운로드해서 넣어야 할 이미지(png, jpg)나 커스텀 SVG 아이콘 로케이션(예: `~/assets/images/`, `~/assets/icons/`) 등이 있을 경우, 에셋을 어떻게 프로젝트에 넣고 컴포넌트 내에 매핑할지 미리 안내합니다.
+3. **에셋 전달 가이드 제공**: 디자인 내에 디자이너가 직접 다운로드해서 넣어야 할 이미지(png, jpg)나 커스텀 SVG 아이콘 등이 있을 경우, 아래 표준 폴더에 배치하도록 안내하고 컴포넌트 내 import 경로를 미리 안내합니다.
+   - 래스터 이미지: `~/assets/images/` (파일명: kebab-case, 예: `hero-background.png`)
+   - SVG 아이콘: `~/assets/icons/` (파일명: `icon-[name].svg`, 예: `icon-arrow.svg`)
+   - 커스텀 폰트: `~/assets/fonts/`
 
 ## 작업 유형별 워크플로우 (Task Workflows)
 

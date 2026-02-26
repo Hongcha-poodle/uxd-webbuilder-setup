@@ -24,12 +24,71 @@
 
 ## 🚀 주요 기능 (Features)
 
-1. **Figma to Vue 생성 (`expert-figma-to-vue`)**
-   - 디자이너가 Figma에서 추출한 데이터를 바탕으로 Tailwind CSS 기반의 `SFC (.vue)` 컴포넌트를 `~/components/` 내에 자동 생성합니다.
-2. **동적 프리뷰 시스템 (`expert-nuxt-preview`)**
-   - Storybook 없이도 `~/pages/preview/[ComponentName]` 경로를 통해 생성된 컴포넌트 UI를 브라우저에서 즉각 확인할 수 있습니다.
-3. **생성 컴포넌트 검증 (`expert-vue-tester`)**
-   - `/component-validation` 워크플로우를 통해 생성된 컴포넌트의 타입, 마크업 구조, 스타일을 QA하고 에러를 리뷰합니다.
+### 에이전트 (Agents)
+
+| 에이전트 | 파일 | 역할 |
+|---|---|---|
+| `expert-figma-to-vue` | `.ai/rules/development/expert-figma-to-vue.md` | Figma 노드 데이터를 받아 Vue SFC 컴포넌트를 생성·수정하는 핵심 에이전트 |
+| `expert-nuxt-preview` | `.ai/rules/development/expert-nuxt-preview.md` | 생성된 컴포넌트를 로컬 브라우저에서 즉시 확인할 수 있도록 프리뷰 환경을 구성하는 에이전트 |
+| `expert-vue-tester` | `.ai/rules/development/expert-vue-tester.md` | 생성된 컴포넌트에 대한 유닛 테스트 코드를 작성하고 타입·렌더링 오류를 검증하는 에이전트 |
+
+**각 에이전트 상세 역할:**
+
+1. **`expert-figma-to-vue`** — 컴포넌트 생성 에이전트
+   - Figma Dev Mode MCP를 통해 노드 데이터를 수집하고, 선택한 **레이어명을 PascalCase로 변환**하여 컴포넌트 파일명으로 사용합니다. (예: `"login form"` → `LoginForm.vue`)
+   - Tailwind CSS + TypeScript 기반의 `.vue` SFC를 생성하고 **`components/`** 폴더에 저장합니다.
+   - `data-node-id` 속성 보존, 시맨틱 HTML, 접근성(aria) 적용을 포함한 9가지 Hard Rule을 준수합니다.
+   - 기존 컴포넌트 수정 시 비즈니스 로직(`ref`, `reactive`, lifecycle hook 등)을 보존하고 템플릿·스타일만 교체합니다.
+
+2. **`expert-nuxt-preview`** — 프리뷰 에이전트
+   - Storybook 없이 `pages/preview/[name].vue` 동적 라우팅을 활용해 컴포넌트를 브라우저에서 즉시 확인합니다.
+   - 개발 서버(포트 3000) 상태를 확인하고, OS에 맞는 명령어로 브라우저를 자동으로 엽니다.
+     - Windows: `start http://localhost:3000/preview/[ComponentName]`
+     - macOS/Linux: `open http://localhost:3000/preview/[ComponentName]`
+
+3. **`expert-vue-tester`** — 테스트 에이전트
+   - 생성된 컴포넌트의 렌더링, Props·기본값, 사용자 인터랙션(click, emit), 접근성(aria-*)을 검증하는 유닛 테스트를 작성합니다.
+   - 테스트 파일은 `[ComponentName].spec.ts` 형식으로 저장하며, 커버리지 최소 80%를 목표로 합니다.
+   - 심각한 에러 발견 시 `expert-figma-to-vue`에게 피드백하여 자동 수정(Self-Correction)을 유도합니다.
+
+---
+
+### 워크플로우 (Workflows)
+
+| 워크플로우 | 파일 | 실행 시점 |
+|---|---|---|
+| `figma-to-code` | `.agent/workflows/figma-to-code.md` | Figma 디자인 → Vue 컴포넌트 변환 시 |
+| `component-validation` | `.agent/workflows/component-validation.md` | 컴포넌트 생성·수정 완료 후 QA 단계 |
+
+**각 워크플로우 실행 순서:**
+
+```
+[figma-to-code 워크플로우]
+  1. 규칙 로드 (expert-figma-to-vue + vue-nuxt + typescript + tailwind)
+  2. Figma MCP로 노드 수집 → 레이어명을 PascalCase 파일명으로 확정
+  3. .vue 파일 생성 → 사용자 리뷰 → components/ 에 저장
+  4. component-validation 워크플로우로 핸드오프
+       ↓
+[component-validation 워크플로우]
+  1. 규칙 로드 (expert-vue-tester)
+  2. 정적 분석 + 유닛 테스트 코드 작성
+  3. 에러 처리 (심각 → expert-figma-to-vue 피드백 / 경미 → .spec.ts 저장)
+  4. 프리뷰 URL 제공 → 브라우저 자동 오픈
+```
+
+---
+
+### 에셋 구조 (Asset Structure)
+
+컴포넌트에서 참조하는 정적 에셋은 아래 Vue/Nuxt 권장 구조를 따릅니다:
+
+```
+assets/
+├── css/      # 전역 스타일시트 (예: tailwind.css)
+├── images/   # 래스터 이미지 (파일명: kebab-case, 예: hero-background.png)
+├── icons/    # SVG 아이콘 (파일명: icon-[name].svg, 예: icon-arrow.svg)
+└── fonts/    # 커스텀 폰트 파일
+```
 
 ## 🏃 시작하기 (Getting Started)
 
