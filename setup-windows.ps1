@@ -20,6 +20,9 @@ if (-not (Test-Path "$targetPath\.ai")) {
 if (-not (Test-Path "$targetPath\.agent")) {
     New-Item -ItemType Directory -Force -Path "$targetPath\.agent" | Out-Null
 }
+if (-not (Test-Path "$targetPath\.github")) {
+    New-Item -ItemType Directory -Force -Path "$targetPath\.github" | Out-Null
+}
 
 # .ai 폴더 복사
 Write-Host "Copying .ai directory..."
@@ -28,6 +31,14 @@ Copy-Item -Path "$tempDir\.ai\*" -Destination "$targetPath\.ai" -Recurse -Force
 # .agent 폴더 복사
 Write-Host "Copying .agent directory..."
 Copy-Item -Path "$tempDir\.agent\*" -Destination "$targetPath\.agent" -Recurse -Force
+
+# .github 폴더 복사
+Write-Host "Copying .github directory..."
+Copy-Item -Path "$tempDir\.github\*" -Destination "$targetPath\.github" -Recurse -Force
+
+# CLAUDE.md 복사
+Write-Host "Copying CLAUDE.md..."
+Copy-Item -Path "$tempDir\CLAUDE.md" -Destination "$targetPath\CLAUDE.md" -Force
 
 # 임시 폴더 삭제
 Remove-Item -Path $tempDir -Recurse -Force

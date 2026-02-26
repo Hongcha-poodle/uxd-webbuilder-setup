@@ -15,8 +15,7 @@ const DynamicComponent = defineAsyncComponent(() =>
 </script>
 
 <template>
-  <main class="min-h-screen bg-bg-light-gray flex flex-col items-center justify-center p-8">
-    
+  <div>
     <!-- Top Bar with Component Info -->
     <div class="fixed top-0 left-0 w-full bg-slate-900 text-white p-3 flex justify-between items-center z-50 shadow-md">
       <div class="flex items-center gap-3">
@@ -34,10 +33,9 @@ const DynamicComponent = defineAsyncComponent(() =>
       </div>
     </div>
 
-    <!-- Component Render Area -->
-    <div class="w-full max-w-[1440px] mt-16 bg-white shadow-2xl rounded-xl overflow-hidden border border-slate-200 relative min-h-[400px]">
+    <!-- Component Render Area: no wrapper, renders as-is -->
+    <div class="pt-[52px]">
       <DynamicComponent />
     </div>
-
-  </main>
+  </div>
 </template>

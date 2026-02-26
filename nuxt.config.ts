@@ -20,7 +20,7 @@ export default defineNuxtConfig({
   ],
   app: {
     head: {
-      title: 'Adinsu MV6 Dev Test',
+      title: 'GoodRich Web-builder Preview',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       ],

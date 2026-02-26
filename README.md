@@ -19,6 +19,8 @@
 - **`.ai/config/`**: 품질 게이트 기준 설정 (예: `quality.yaml`)
 - **`.agent/workflows/`**: 에이전트 실행 순서를 정의하는 오케스트레이션 스크립트 (`/figma-to-code`, `/component-validation`)
 - **`.agent/rules/`**: 프로젝트 전역 AI 규칙 (`rules.md`)
+- **`.github/copilot-instructions.md`**: GitHub Copilot용 프로젝트 컨텍스트 지침
+- **`CLAUDE.md`**: Claude Code용 프로젝트 전역 지침 (`.ai/core.md` 및 `.ai/rules/` 참조 강제)
 
 ## 🚀 주요 기능 (Features)
 
@@ -31,8 +33,8 @@
 
 ## 🏃 시작하기 (Getting Started)
 
-프로젝트를 처음 세팅할 때 AI 워크플로우에 필요한 지침 폴더(`.ai`, `.agent`)와 프론트엔드 환경 설정을 위해 메인 레포지토리를 클론합니다.
-기존 프로젝트에 워크플로우 관련 폴더(`.ai`, `.agent`)만 단독으로 설치하고 싶다면 제공되는 설치 스크립트를 활용할 수 있습니다.
+프로젝트를 처음 세팅할 때 AI 워크플로우에 필요한 지침 폴더(`.ai`, `.agent`, `.github`)와 `CLAUDE.md`, 그리고 프론트엔드 환경 설정을 위해 메인 레포지토리를 클론합니다.
+기존 프로젝트에 워크플로우 관련 파일(`.ai`, `.agent`, `.github`, `CLAUDE.md`)만 단독으로 설치하고 싶다면 제공되는 설치 스크립트를 활용할 수 있습니다.
 
 ### 1단계: 저장소 클론 (전체 프로젝트 시작)
 
@@ -53,7 +55,7 @@ git clone https://github.com/Hongcha-poodle/uxd-webbuilder-setup.git .
 
 > 💡 **차이점**: 방법 A는 지정한 이름으로 새 폴더를 만들어 그 안에 파일을 넣습니다. 방법 B는 URL 뒤에 `.`을 붙여 현재 디렉토리에 바로 파일을 복사합니다 (별도 하위 폴더 생성 없음).
 
-*(참고: 기존 프로젝트에 `.ai`와 `.agent` 폴더만 복사하려면 프로젝트 디렉토리에서 `setup-windows.ps1` 또는 `setup-mac.sh` 스크립트를 실행하면 됩니다.)*
+*(참고: 기존 프로젝트에 `.ai`, `.agent`, `.github` 폴더와 `CLAUDE.md`만 복사하려면 프로젝트 디렉토리에서 `setup-windows.ps1` 또는 `setup-mac.sh` 스크립트를 실행하면 됩니다.)*
 
 ### 2단계: 프론트엔드 종속성 설치 및 실행
 
