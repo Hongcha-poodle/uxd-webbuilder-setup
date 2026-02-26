@@ -1,20 +1,26 @@
 #!/bin/bash
 # AI Workflow Setup Script (macOS/Linux)
 
-SOURCE_PATH="C:/Users/Rich/Desktop/team_workflow_build" # TODO: Change this to the actual Git repository URL later
+REPO_URL="https://github.com/Hongcha-poodle/uxd-webbuilder-setup.git"
+TEMP_DIR="/tmp/uxd-setup-temp"
 TARGET_PATH="."
 
 echo "Setting up AI Workflow files..."
+
+rm -rf "$TEMP_DIR"
+echo "Downloading latest AI Workflow from remote repository..."
+git clone --quiet --depth 1 "$REPO_URL" "$TEMP_DIR"
 
 # 대상 폴더 생성
 mkdir -p "$TARGET_PATH/.ai"
 mkdir -p "$TARGET_PATH/.agent"
 
-# 로컬 복사 방식 (나중에 git clone이나 curl로 변경 필요)
 echo "Copying .ai directory..."
-cp -R "$SOURCE_PATH/.ai/"* "$TARGET_PATH/.ai/"
+cp -R "$TEMP_DIR/.ai/"* "$TARGET_PATH/.ai/"
 
 echo "Copying .agent directory..."
-cp -R "$SOURCE_PATH/.agent/"* "$TARGET_PATH/.agent/"
+cp -R "$TEMP_DIR/.agent/"* "$TARGET_PATH/.agent/"
+
+rm -rf "$TEMP_DIR"
 
 echo "AI Workflow setup completed successfully!"

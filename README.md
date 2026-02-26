@@ -20,7 +20,7 @@
 ## 🚀 주요 기능 (Features)
 
 1. **Figma to Vue 생성 (`expert-figma-to-vue`)**
-   - 개발자가 Figma에서 추출한 데이터를 바탕으로 Tailwind CSS 기반의 `SFC (.vue)` 컴포넌트를 `~/components/` 내에 자동 생성합니다.
+   - 디자이너가 Figma에서 추출한 데이터를 바탕으로 Tailwind CSS 기반의 `SFC (.vue)` 컴포넌트를 `~/components/` 내에 자동 생성합니다.
 2. **동적 프리뷰 시스템 (`expert-nuxt-preview`)**
    - Storybook 없이도 `~/pages/preview/[ComponentName]` 경로를 통해 생성된 컴포넌트 UI를 브라우저에서 즉각 확인할 수 있습니다.
 3. **생성 컴포넌트 검증 (`expert-vue-tester`)**
@@ -28,23 +28,19 @@
 
 ## 🏃 시작하기 (Getting Started)
 
-프로젝트를 처음 클론하거나 다운로드 받은 후, AI 워크플로우에 필요한 지침 폴더(`.ai`, `.agent`)를 로컬 환경에 설치해야 합니다. 제공된 설치 스크립트를 통해 이를 자동화할 수 있습니다.
+프로젝트를 처음 세팅할 때 AI 워크플로우에 필요한 지침 폴더(`.ai`, `.agent`)와 프론트엔드 환경 설정을 위해 메인 레포지토리를 클론합니다.
+기존 프로젝트에 워크플로우 관련 폴더(`.ai`, `.agent`)만 단독으로 설치하고 싶다면 제공되는 설치 스크립트를 활용할 수 있습니다.
 
-### 1단계: AI 워크플로우 설치
+### 1단계: 저장소 클론 (전체 프로젝트 시작)
 
-운영체제에 맞는 스크립트를 터미널에서 실행하세요:
+프론트엔드 환경 전체를 시작하려면 터미널에서 아래 명령어로 리포지토리를 다운로드하세요.
 
-**Windows (PowerShell):**
-```powershell
-.\setup_windows.ps1
-```
-
-**macOS / Linux (Bash):**
 ```bash
-./setup_mac.sh
+git clone https://github.com/Hongcha-poodle/uxd-webbuilder-setup.git
+cd uxd-webbuilder-setup
 ```
 
-*(참고: 추후 깃허브 원격 저장소가 설정되면 스크립트 내부의 소스 경로를 업데이트할 예정입니다.)*
+*(참고: 기존 프로젝트에 `.ai`와 `.agent` 폴더만 복사하려면 프로젝트 디렉토리에서 `setup_windows.ps1` 또는 `setup_mac.sh` 스크립트를 실행하면 됩니다.)*
 
 ### 2단계: 프론트엔드 종속성 설치 및 실행
 
@@ -57,9 +53,5 @@ npm install
 # 로컬 개발 서버 실행
 npm run dev
 ```
-
-### 새로운 컴포넌트 생성 요청 방법
-AI 챗이나 명령어 인터페이스 툴킷에 다음처럼 프롬프트를 입력하세요:
-> "Figma 데이터를 바탕으로 `/figma_to_code` 워크플로우를 통해 컴포넌트를 만들어줘."
 
 컴포넌트 생성 후, 제공되는 로컬 주소(예: `http://localhost:3000/preview/[컴포넌트이름]`)를 통해 바로 결과를 확인할 수 있습니다.
