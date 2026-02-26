@@ -20,6 +20,12 @@ const DynamicComponent = defineAsyncComponent(() =>
     <!-- Top Bar with Component Info -->
     <div class="fixed top-0 left-0 w-full bg-slate-900 text-white p-3 flex justify-between items-center z-50 shadow-md">
       <div class="flex items-center gap-3">
+        <NuxtLink
+          to="/preview"
+          class="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white border border-slate-700 hover:border-slate-400 px-2.5 py-1.5 rounded transition-colors"
+        >
+          ← 목록으로
+        </NuxtLink>
         <span class="font-bold text-lg border-r border-slate-600 pr-3">Nuxt Component Preview</span>
         <span class="font-mono text-sm text-green-400">&lt;{{ componentName }} /&gt;</span>
       </div>
