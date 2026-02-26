@@ -11,7 +11,7 @@ trigger: "figma, design to code, 컴포넌트 생성, figma-to-vue"
 
 - **담당 하위 에이전트(Sub-agent)**: `expert-figma-to-vue`
 - **규칙 위치(Rule Path)**: `@.ai/rules/development/expert-figma-to-vue.md` (반드시 이 파일의 Rule들을 컨텍스트에 주입할 것)
-- **워크플로우(Workflow)**: `.agent/workflows/figma_to_code.md` (사용자 명령어 `/figma_to_code` 매핑)
+- **워크플로우(Workflow)**: `.agent/workflows/figma-to-code.md` (사용자 명령어 `/figma-to-code` 매핑)
 
 ## 오케스트레이터 행동 지침
 1. 사용자의 요청이 Figma 디자인 변환과 관련이 있음을 인식(trigger)한 경우, 이 스킬 메타데이터를 로드합니다.

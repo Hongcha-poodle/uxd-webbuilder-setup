@@ -20,6 +20,6 @@ description: 생성된 프론트엔드 UI 컴포넌트를 브라우저에서 동
   - 못 찾을 경우 렌더링 에러를 뱉는 Fallback UI 구현 포함.
 
 ### 2. 프리뷰 안내 문구 제공 (URL Hand-off)
-코드 생성을 담당하는 다른 에이전트(`expert-figma-to-vue` 등)나 검증 워크플로우(`/component_validation`) 마지막에 다음과 같이 유저에게 브라우저 확인 링크를 제공하도록 돕습니다.
+코드 생성을 담당하는 다른 에이전트(`expert-figma-to-vue` 등)나 검증 워크플로우(`/component-validation`) 마지막에 다음과 같이 유저에게 브라우저 확인 링크를 제공하도록 돕습니다.
 - 예시: `http://localhost:3000/preview/AdinsuContFormHero`
 - 로컬 Dev 서버가 돌고 있다는 전제하에 바로 클릭해서 이동할 수 있도록 다이얼로그 가이드라인을 제공합니다.

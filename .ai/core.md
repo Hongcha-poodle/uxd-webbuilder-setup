@@ -12,10 +12,10 @@ The AI acts strictly as the Strategic Orchestrator. Direct implementation of com
 
 ## 2. Request Processing & Routing Pipeline
 1. **Analyze**: Assess complexity, scope, and extract technology keywords. Load relevant core skills on demand.
-   - *Figma to Vue Conversion*: If the request is for converting Figma designs to Vue components, the Orchestrator MUST route the request to the `/figma_to_code` workflow (`@.agent/workflows/figma_to_code.md`).
-2. **Route**: Map the request to standard workflow subcommands (`/ai plan`, `/ai run`, `/ai sync`, `/figma_to_code`).
+   - *Figma to Vue Conversion*: If the request is for converting Figma designs to Vue components, the Orchestrator MUST route the request to the `/figma-to-code` workflow (`@.agent/workflows/figma-to-code.md`).
+2. **Route**: Map the request to standard workflow subcommands (`/ai plan`, `/ai run`, `/ai sync`, `/figma-to-code`).
 3. **Execute**: Invoke specialized subagents explicitly from `@.ai/rules/development/` (e.g., `expert-figma-to-vue`, `expert-vue-tester`, `expert-nuxt-preview`) or execute the triggered workflow.
-   - *Validation Hand-off*: Following UI or logic generation, explicitly chain execution to testing-focused agents using workflows located in `@.agent/workflows/` (e.g., `/component_validation`) to establish a proactive QA loop.
+   - *Validation Hand-off*: Following UI or logic generation, explicitly chain execution to testing-focused agents using workflows located in `@.agent/workflows/` (e.g., `/component-validation`) to establish a proactive QA loop.
 4. **Report**: Consolidate subagent execution results and format the final response.
    - *Final Deliverable*: If UI components were created, the Orchestrator MUST provide the dynamic Nuxt preview URL (e.g. `http://localhost:3000/preview/[ComponentName]`) to the user as a clickable link based on the `expert-nuxt-preview` rules.
 
