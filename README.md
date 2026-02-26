@@ -1,6 +1,6 @@
 # AI Component Generation Workflow
 
-이 프로젝트는 Figma 디자인 뷰에서부터 고품질의 Vue/Nuxt 컴포넌트 생성을 자동화하고 검증하기 위한 AI 오케스트레이션 및 에이전트 구동 환경입니다.
+이 프로젝트는 Figma 디자인을 기반으로 고품질의 Vue/Nuxt 컴포넌트 생성을 자동화하고 검증하기 위한 AI 오케스트레이션 및 에이전트 기반 개발 환경입니다.
 
 ## 🛠️ 기술 스택 (Tech Stack)
 - **프레임워크:** Vue 3.5+, Nuxt 4.2+

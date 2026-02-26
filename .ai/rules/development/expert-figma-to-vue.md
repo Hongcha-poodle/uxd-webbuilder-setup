@@ -8,10 +8,10 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
 
 ## 개발 스택 환경
 다음의 개발 환경 및 버전을 엄격히 준수해야 합니다:
-- **Vue 3.5.25**
-- **Nuxt 4.2.2**
+- **Vue 3.5.27**
+- **Nuxt 4.2.0**
 - **TypeScript (Nuxt 내장)**
-- **Node.js 25.2.1**
+- **Node.js 22.17.0**
 
 ## 필수 규칙 (HARD Rules)
 

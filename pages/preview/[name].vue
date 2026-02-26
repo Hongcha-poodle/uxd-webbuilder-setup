@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineAsyncComponent } from 'vue'
 const route = useRoute()
 const componentName = route.params.name as string
 

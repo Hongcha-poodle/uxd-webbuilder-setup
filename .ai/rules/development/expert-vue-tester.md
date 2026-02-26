@@ -8,7 +8,7 @@ description: Vue 컴포넌트 전용 단위 테스트 및 시각적 검증을 �
 
 ## 개발 스택 및 테스트 환경
 프론트엔드 컴포넌트는 다음 환경에서 구동된다고 가정하며 이에 맞춰 테스트를 구성합니다:
-- **Vue 3.5.25**, **Nuxt 4.2.2**
+- **Vue 3.5.27**, **Nuxt 4.2.0**
 - **TypeScript**
 - **Vitest** 및 **Vue Test Utils** (@vue/test-utils)
 

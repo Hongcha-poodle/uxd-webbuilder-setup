@@ -58,8 +58,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-
 // Vite 기능을 사용하여 components 폴더의 모든 .vue 파일을 동적으로 가져옵니다.
 const componentModules = import.meta.glob('~/components/**/*.vue')
 
