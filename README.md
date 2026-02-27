@@ -1,88 +1,163 @@
-# AI Component Generation Workflow
+# GoodRich Webbuilder — UXD Team AI Component Workflow
 
-굿리치 UX디자인팀의 웹빌더 Figma 디자인을 고품질의 Vue/Nuxt 컴포넌트 생성을 자동화하고 검증하기 위한 AI 오케스트레이션 및 에이전트 기반 개발 환경입니다.
+굿리치 UX디자인팀의 웹빌더 Figma 디자인을 고품질의 Vue 컴포넌트로 자동 변환하고 브라우저에서 즉시 확인할 수 있는 AI 기반 개발 환경입니다.
+
+---
+
+## 🚀 시작하기 (Getting Started)
+
+> 처음 사용하는 분들은 아래 순서대로 따라 하시면 됩니다.
+
+### 1단계: 저장소 다운로드 (클론)
+
+터미널(명령 프롬프트)을 열고 아래 명령어 중 하나를 실행하세요.
+
+**방법 A: 현재 폴더에 바로 설치하기** ← 이 방법이 더 편합니다
+
+원하는 이름으로 폴더를 미리 만들어 두고, 그 폴더 안에서 터미널을 열고 실행하세요. URL 끝의 `.`을 빠뜨리지 마세요.
+
+```bash
+git clone https://github.com/Hongcha-poodle/uxd-webbuilder-setup.git .
+```
+
+**방법 B: 명령어로 새 폴더를 만들면서 설치하기**
+
+터미널에서 원하는 상위 폴더로 이동한 뒤 실행하세요. `내-프로젝트명` 자리에 원하는 폴더명을 입력하면 자동으로 폴더가 생성됩니다.
+
+```bash
+git clone https://github.com/Hongcha-poodle/uxd-webbuilder-setup.git 내-프로젝트명
+cd 내-프로젝트명
+```
+
+---
+
+### 2단계: 패키지 설치
+
+프로젝트 실행에 필요한 프로그램들을 설치합니다. 아래 명령어 하나로 끝납니다.
+
+```bash
+npm install
+```
+
+> 💡 이 과정은 처음 한 번만 하면 됩니다. `node_modules` 폴더가 자동으로 생성됩니다.
+
+**필요한 주요 패키지 (자동 설치됨)**
+
+| 패키지 | 역할 |
+|---|---|
+| Nuxt 4 | Vue 기반 프레임워크. 로컬 개발 서버 및 라우팅 제공 |
+| Vue 3 | UI 컴포넌트 작성 언어 |
+| Tailwind CSS | 디자인 스타일 유틸리티 (클래스 기반 스타일링) |
+| TypeScript | 타입 안정성을 높인 JavaScript |
+| Vitest | 컴포넌트 자동 테스트 도구 |
+
+---
+
+### 3단계: 로컬 개발 서버 실행
+
+```bash
+npm run dev
+```
+
+서버가 실행되면 터미널에 로컬 주소가 표시됩니다. 브라우저에서 아래 주소로 접속하세요.
+
+```
+http://localhost:3000
+```
+
+**컴포넌트 프리뷰 확인**
+
+AI가 컴포넌트를 생성하면 `pages/preview/` 폴더 안에 해당 컴포넌트를 브라우저에서 바로 볼 수 있는 프리뷰 페이지가 자동으로 추가됩니다. 아래 주소 패턴으로 접속하면 결과를 즉시 확인할 수 있습니다.
+
+```
+http://localhost:3000/preview/[컴포넌트이름]
+```
+
+> 💡 예: `LoginForm` 컴포넌트가 생성됐다면 → `http://localhost:3000/preview/LoginForm`
+> 생성이 완료되면 AI가 해당 링크를 자동으로 알려주고 브라우저를 직접 열어줍니다.
+
+---
+
+### 기존 프로젝트에 AI 워크플로우만 추가하고 싶다면
+
+이미 개발 중인 프로젝트가 있다면, `.ai`, `.agent`, `.github` 폴더와 `CLAUDE.md`, `AGENTS.md` 파일만 복사해서 사용할 수 있습니다. 프로젝트 폴더에서 아래 스크립트를 실행하세요.
+
+- **Windows**: `setup-windows.ps1`
+- **macOS**: `setup-mac.sh`
+
+---
 
 ## 🛠️ 기술 스택 (Tech Stack)
-- **프레임워크:** Vue 3.5+, Nuxt 4.2+
-- **언어:** TypeScript
-- **스타일링:** Tailwind CSS
-- **컴포넌트 개발 및 프리뷰:** 동적 라우팅 기반 `pages/preview/[name].vue` 활용
 
-## 🏗️ 폴더 구조 및 AI 에이전트 아키텍처 (Architecture)
+| 항목 | 내용 |
+|---|---|
+| 프레임워크 | Vue 3.5+, Nuxt 4.2+ |
+| 언어 | TypeScript |
+| 스타일링 | Tailwind CSS |
+| 컴포넌트 프리뷰 | 동적 라우팅 기반 `pages/preview/[name].vue` |
 
-이 프로젝트는 자체적인 AI 에이전트 시스템 체계를 갖추고 있습니다. 루트의 `.ai/` 및 `.agent/` 폴더에 핵심 지침들이 구성되어 있습니다.
+---
 
-- **`.ai/core.md`**: 워크플로우를 통제하는 최상위 오케스트레이터 지침 (AI 행동, 컴포넌트 저장소 라우팅, 품질 기준)
-- **`.ai/rules/development/`**: 전문 개발 하위 에이전트 가이드 (예: `expert-figma-to-vue.md`, `expert-legacy-to-vue.md`, `expert-nuxt-preview.md`, `expert-vue-tester.md`)
-- **`.ai/rules/language/`**: 사용 언어(Vue, TypeScript, Tailwind) 작성 규칙
-- **`.ai/skills/`**: 트리거 기반으로 동적 로드되는 스킬 정의 (예: `figma-to-vue.md`, `legacy-to-vue.md`)
-- **`.ai/config/`**: 품질 게이트 기준 설정 (예: `quality.yaml`)
-- **`.agent/workflows/`**: 에이전트 실행 순서를 정의하는 오케스트레이션 스크립트 (`/figma-to-code`, `/legacy-to-vue`, `/component-validation`)
-- **`.agent/rules/`**: Google Antigravity용 프로젝트 전역 지침 (`rules.md`)
-- **`.github/copilot-instructions.md`**: GitHub Copilot용 프로젝트 컨텍스트 지침
-- **`CLAUDE.md`**: Claude Code용 프로젝트 전역 지침 (`.ai/core.md` 및 `.ai/rules/` 참조 강제)
-- **`AGENTS.md`**: OpenAI Codex용 프로젝트 전역 지침 (`.ai/core.md` 및 `.ai/rules/` 참조 강제)
+## 🏗️ AI 에이전트 아키텍처 (Architecture)
 
-## 🚀 주요 기능 (Features)
+이 프로젝트는 자체적인 AI 에이전트 시스템을 갖추고 있습니다. 루트의 `.ai/`와 `.agent/` 폴더에 핵심 지침들이 구성되어 있습니다.
 
-### 에이전트 (Agents)
+| 폴더/파일 | 역할 |
+|---|---|
+| `.ai/core.md` | 전체 워크플로우를 통제하는 최상위 오케스트레이터 지침 |
+| `.ai/rules/development/` | 전문 하위 에이전트 가이드 (Figma 변환, 레거시 변환, 프리뷰, 테스트) |
+| `.ai/rules/language/` | Vue, TypeScript, Tailwind 작성 규칙 |
+| `.ai/skills/` | 트리거 기반으로 동적 로드되는 스킬 정의 |
+| `.ai/config/` | 품질 게이트 기준 설정 (`quality.yaml`) |
+| `.agent/workflows/` | 에이전트 실행 순서를 정의하는 워크플로우 스크립트 |
+| `.agent/rules/` | Google Antigravity용 전역 지침 |
+| `.github/copilot-instructions.md` | GitHub Copilot용 프로젝트 컨텍스트 지침 |
+| `CLAUDE.md` | Claude Code용 전역 지침 |
+| `AGENTS.md` | OpenAI Codex용 전역 지침 |
 
-| 에이전트 | 파일 | 역할 |
-|---|---|---|
-| `expert-figma-to-vue` | `.ai/rules/development/expert-figma-to-vue.md` | Figma 노드 데이터를 받아 Vue SFC 컴포넌트를 생성·수정하는 핵심 에이전트 |
-| `expert-legacy-to-vue` | `.ai/rules/development/expert-legacy-to-vue.md` | 기존 HTML/CSS/JS 레거시 코드를 Vue SFC 컴포넌트로 변환하는 에이전트 |
-| `expert-nuxt-preview` | `.ai/rules/development/expert-nuxt-preview.md` | 생성된 컴포넌트를 로컬 브라우저에서 즉시 확인할 수 있도록 프리뷰 환경을 구성하는 에이전트 |
-| `expert-vue-tester` | `.ai/rules/development/expert-vue-tester.md` | 생성된 컴포넌트에 대한 유닛 테스트 코드를 작성하고 타입·렌더링 오류를 검증하는 에이전트 |
+---
 
-**각 에이전트 상세 역할:**
+## 🤖 주요 에이전트 (Agents)
+
+| 에이전트 | 역할 |
+|---|---|
+| `expert-figma-to-vue` | Figma 노드 데이터를 받아 Vue SFC 컴포넌트를 생성·수정 |
+| `expert-legacy-to-vue` | 기존 HTML/CSS/JS 레거시 코드를 Vue SFC로 변환 |
+| `expert-nuxt-preview` | 생성된 컴포넌트를 로컬 브라우저에서 즉시 확인할 수 있도록 프리뷰 환경 구성 |
+| `expert-vue-tester` | 생성된 컴포넌트에 대한 유닛 테스트를 작성하고 오류를 검증 |
+
+### 에이전트 상세 역할
 
 1. **`expert-figma-to-vue`** — Figma 컴포넌트 생성 에이전트
-   - **Figma MCP 우선 전략**: 1순위로 Figma Dev Mode MCP Server를 통해 노드 데이터를 자동 수집합니다. MCP 연결이 실패할 경우 2순위로 사용자에게 Figma Node ID 또는 URL을 직접 요청합니다.
-   - 선택한 **레이어명을 PascalCase로 변환**하여 컴포넌트 파일명으로 사용합니다. (예: `"login form"` → `LoginForm.vue`)
-   - Tailwind CSS + TypeScript 기반의 `.vue` SFC를 생성하고 **`components/`** 폴더에 저장합니다.
-   - `data-node-id` 속성 보존, 시맨틱 HTML, 접근성(aria) 적용을 포함한 9가지 Hard Rule을 준수합니다.
-   - 기존 컴포넌트 수정 시 비즈니스 로직(`ref`, `reactive`, lifecycle hook 등)을 보존하고 템플릿·스타일만 교체합니다.
+   - Figma Dev Mode MCP Server를 통해 노드 데이터를 자동 수집합니다. 연결 실패 시 Figma Node ID 또는 URL을 직접 요청합니다.
+   - 선택한 레이어명을 PascalCase로 변환하여 컴포넌트 파일명으로 사용합니다. (예: `"login form"` → `LoginForm.vue`)
+   - Tailwind CSS + TypeScript 기반의 `.vue` SFC를 생성하고 `components/` 폴더에 저장합니다.
 
 2. **`expert-legacy-to-vue`** — 레거시 변환 에이전트
-   - 기존 HTML/CSS/JavaScript 레거시 코드를 분석하여 Vue 3 SFC로 변환합니다.
-   - JS 패턴 변환: ES6 `class`, `querySelector`, `addEventListener`, `classList` 등 → Composition API(`ref`, `reactive`, `@click`, `:class` 등)로 매핑합니다.
-   - CSS 변수(`var(--color-*)`) → Tailwind `theme.extend`에 매핑하여 표준 유틸리티 클래스로 사용합니다. 임의값(`text-[var(...)]`) 사용을 금지합니다.
-   - 글로벌 함수/타 컴포넌트 직접 참조 → `<!-- TODO -->` 플레이스홀더 삽입 및 **Dependencies Report** 작성으로 추적합니다.
-   - 컴포넌트 파일명은 사용자에게 직접 확인하며, 미제공 시 2~3개 후보를 제안합니다.
-   - 복수 레거시 파일(HTML + CSS + JS)을 단일 `.vue` 파일로 병합하고, 10가지 Hard Rule을 준수합니다.
+   - 기존 HTML/CSS/JavaScript 코드를 분석하여 Vue 3 SFC로 변환합니다.
+   - 글로벌 함수 등 변환 불가 항목은 `<!-- TODO -->` 플레이스홀더로 표시하고 Dependencies Report를 작성합니다.
 
 3. **`expert-nuxt-preview`** — 프리뷰 에이전트
-   - Storybook 없이 `pages/preview/[name].vue` 동적 라우팅을 활용해 컴포넌트를 브라우저에서 즉시 확인합니다.
-   - 개발 서버(포트 3000) 상태를 확인하고, OS에 맞는 명령어로 브라우저를 자동으로 엽니다.
+   - `pages/preview/[name].vue` 동적 라우팅으로 Storybook 없이 브라우저에서 컴포넌트를 즉시 확인합니다.
+   - OS에 맞게 브라우저를 자동으로 엽니다.
      - Windows: `start http://localhost:3000/preview/[ComponentName]`
      - macOS/Linux: `open http://localhost:3000/preview/[ComponentName]`
 
 4. **`expert-vue-tester`** — 테스트 에이전트
-   - 생성된 컴포넌트의 렌더링, Props·기본값, 사용자 인터랙션(click, emit), 접근성(aria-*)을 검증하는 유닛 테스트를 작성합니다.
-   - 테스트 파일은 `[ComponentName].spec.ts` 형식으로 저장하며, 커버리지 최소 80%를 목표로 합니다.
-   - 심각한 에러 발견 시 `expert-figma-to-vue`에게 피드백하여 자동 수정(Self-Correction)을 유도합니다.
+   - 렌더링, Props, 사용자 인터랙션, 접근성(aria-*)을 검증하는 유닛 테스트를 작성합니다.
+   - 커버리지 최소 80% 목표이며, 심각한 에러 발견 시 원본 에이전트에 피드백하여 자동 수정합니다.
 
 ---
 
-### 워크플로우 (Workflows)
+## 🔄 워크플로우 (Workflows)
 
-| 워크플로우 | 파일 | 실행 시점 |
-|---|---|---|
-| `figma-to-code` | `.agent/workflows/figma-to-code.md` | Figma 디자인 → Vue 컴포넌트 변환 시 |
-| `legacy-to-vue` | `.agent/workflows/legacy-to-vue.md` | 레거시 HTML/CSS/JS → Vue 컴포넌트 변환 시 |
-| `component-validation` | `.agent/workflows/component-validation.md` | 컴포넌트 생성·수정 완료 후 QA 단계 |
-
-**작업 유형 선택:**
-
-컴포넌트 작업 요청 시, 오케스트레이터(`core.md`)가 먼저 아래 3가지 작업 유형 중 하나를 선택하도록 안내합니다:
+컴포넌트 작업 요청 시, AI 오케스트레이터가 아래 3가지 작업 유형 중 하나를 선택하도록 안내합니다.
 
 | 선택 | 작업 유형 | 라우팅 |
-|------|----------|--------|
+|---|---|---|
 | 1 | Figma → Vue 컴포넌트 구현 | `/figma-to-code` 워크플로우 |
 | 2 | 기존 Vue 컴포넌트 수정 | 해당 에이전트에 직접 위임 |
 | 3 | Legacy → Vue 컴포넌트 변환 | `/legacy-to-vue` 워크플로우 |
-
-**각 워크플로우 실행 순서:**
 
 ```
 [figma-to-code 워크플로우]
@@ -108,9 +183,9 @@
 
 ---
 
-### 에셋 구조 (Asset Structure)
+## 📁 에셋 구조 (Asset Structure)
 
-컴포넌트에서 참조하는 정적 에셋은 아래 Vue/Nuxt 권장 구조를 따릅니다:
+컴포넌트에서 참조하는 정적 에셋은 아래 구조를 따릅니다.
 
 ```
 assets/
@@ -120,42 +195,10 @@ assets/
 └── fonts/    # 커스텀 폰트 파일
 ```
 
-## 🏃 시작하기 (Getting Started)
+---
 
-프로젝트를 처음 세팅할 때 AI 워크플로우에 필요한 지침 폴더(`.ai`, `.agent`, `.github`)와 `CLAUDE.md`, `AGENTS.md`, 그리고 프론트엔드 환경 설정을 위해 메인 레포지토리를 클론합니다.
-기존 프로젝트에 워크플로우 관련 파일(`.ai`, `.agent`, `.github`, `CLAUDE.md`, `AGENTS.md`)만 단독으로 설치하고 싶다면 제공되는 설치 스크립트를 활용할 수 있습니다.
+## Goodrich UX Design Team
 
-### 1단계: 저장소 클론 (전체 프로젝트 시작)
+이 워크플로우는 굿리치 UX디자인팀이 Figma 디자인을 더 빠르고 일관되게 개발 산출물로 전환하기 위해 구축했습니다.
 
-프론트엔드 환경 전체를 시작하려면 터미널에서 아래 명령어로 리포지토리를 다운로드하세요.
-
-**방법 A: 폴더명을 직접 지정** (원하는 이름으로 폴더 생성)
-
-```bash
-git clone https://github.com/Hongcha-poodle/uxd-webbuilder-setup.git 내-프로젝트명
-cd 내-프로젝트명
-```
-
-**방법 B: 현재 폴더에 직접 설치** (이미 원하는 폴더 안에서 터미널 실행 시)
-
-```bash
-git clone https://github.com/Hongcha-poodle/uxd-webbuilder-setup.git .
-```
-
-> 💡 **차이점**: 방법 A는 지정한 이름으로 새 폴더를 만들어 그 안에 파일을 넣습니다. 방법 B는 URL 뒤에 `.`을 붙여 현재 디렉토리에 바로 파일을 복사합니다 (별도 하위 폴더 생성 없음).
-
-*(참고: 기존 프로젝트에 `.ai`, `.agent`, `.github` 폴더와 `CLAUDE.md`, `AGENTS.md`만 복사하려면 프로젝트 디렉토리에서 `setup-windows.ps1` 또는 `setup-mac.sh` 스크립트를 실행하면 됩니다.)*
-
-### 2단계: 프론트엔드 종속성 설치 및 실행
-
-Nuxt 4 개발 서버를 실행하여 작업 환경과 프리뷰 시스템을 가동합니다.
-
-```bash
-# 종속성 설치
-npm install
-
-# 로컬 개발 서버 실행
-npm run dev
-```
-
-컴포넌트 생성 후, 제공되는 로컬 주소(예: `http://localhost:3000/preview/[컴포넌트이름]`)를 통해 바로 결과를 확인할 수 있습니다.
+문의 및 개선 제안은 팀 내 담당자에게 연락하거나 이 저장소에 이슈를 남겨주세요.
