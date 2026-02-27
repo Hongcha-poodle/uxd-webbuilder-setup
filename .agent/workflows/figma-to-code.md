@@ -12,6 +12,7 @@ description: Figma 디자인 스크린샷 또는 노드를 Vue 컴포넌트 코�
 1. **규칙 로드**:
    - `@.ai/rules/development/expert-figma-to-vue.md` 를 읽고 에이전트 페르소나와 Hard Rules를 적용합니다.
    - `@.ai/rules/language/vue-nuxt.md`, `typescript.md`, `tailwind.md` 를 읽고 코딩 표준을 확보합니다.
+   - 인터랙션 구현이 필요한 컴포넌트일 경우, `@.ai/rules/development/expert-vue-scripting.md` 를 추가로 로드하여 스크립트 패턴 가이드를 적용합니다.
 
 2. **초기 확인 및 데이터 수집** → `expert-figma-to-vue` 위임:
    - 에이전트의 "대화 시작 시 초기 확인" 규칙에 따라 사용자 의도를 파악합니다.

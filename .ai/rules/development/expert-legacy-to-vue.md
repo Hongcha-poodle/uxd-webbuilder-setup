@@ -146,6 +146,7 @@ description: 레거시 HTML/CSS/JavaScript 코드를 Vue/Nuxt 컴포넌트로 �
   - HARD Rules의 매핑표에 따라 HTML → `<template>`, CSS → Tailwind 클래스, JS → `<script setup>` 변환을 수행합니다.
   - CSS 변수 사용 목록을 추출하여 Tailwind `theme.extend` 매핑을 제안합니다.
   - 재사용성을 고려하여 Props와 Emits를 유추하고 선언합니다.
+  - **JS 로직 변환 시**, `@.ai/rules/development/expert-vue-scripting.md` 규칙을 로드하고 레거시 JS 패턴에 대응하는 Vue 스크립트 패턴(P01~P14)을 적용합니다. 컴포넌트 유형(Controlled, Stateful, Display, Interactive UI, Animation)을 먼저 판별한 뒤 해당 패턴을 따릅니다.
 - **보고 단계**:
   - **Dependencies Report**를 작성합니다:
     - **CSS Variables**: 사용된 CSS 변수 목록 및 Tailwind 매핑

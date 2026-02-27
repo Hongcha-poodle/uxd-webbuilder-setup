@@ -13,6 +13,7 @@ description: 기존 HTML/CSS/JavaScript 레거시 코드를 Vue 3 SFC 컴포넌�
 1. **규칙 로드**:
    - `@.ai/rules/development/expert-legacy-to-vue.md` 를 읽고 에이전트 페르소나와 Hard Rules를 적용합니다.
    - `@.ai/rules/language/vue-nuxt.md`, `typescript.md`, `tailwind.md` 를 읽고 코딩 표준을 확보합니다.
+   - `@.ai/rules/development/expert-vue-scripting.md` 를 로드하여 JS → Composition API 변환 시 스크립트 패턴 가이드를 적용합니다.
 
 2. **초기 확인 및 소스 수집** → `expert-legacy-to-vue` 위임:
    - 에이전트의 "대화 시작 시 초기 확인" 규칙에 따라 사용자 의도를 파악합니다.

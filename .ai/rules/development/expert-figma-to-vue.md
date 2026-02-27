@@ -86,12 +86,14 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
 - **행동 지침**: 
   - 제공된 Figma 정보(스크린샷, JSON)를 바탕으로 전체 `.vue` 보일러플레이트를 작성합니다.
   - 재사용성을 고려하여 Props와 Emits를 유추하고 선언합니다.
+  - **인터랙션 구현이 필요한 경우**, `@.ai/rules/development/expert-vue-scripting.md` 규칙을 로드하고 해당 컴포넌트 유형(Controlled, Stateful, Display, Interactive UI, Animation)에 맞는 패턴을 적용합니다.
 
 ### B. 기존 컴포넌트 수정 (Existing Component Modification)
 - **컨텍스트 확인**: 반드시 타겟이 되는 기존 `.vue` 파일의 코드를 먼저 읽고 분석(`view_file` 등 활용)해야 합니다.
 - **행동 지침**:
   - **로직 보존**: 기존의 상태 변수(`ref`, `reactive`), 라이프사이클 훅, API 호출, 커스텀 이벤트 처리 등 비즈니스 로직을 절대 삭제하거나 임의로 수정하지 않습니다.
   - **부분 수정**: Figma 디자인 변경 사항(예: CSS 클래스, 레이아웃 태그 구조 변경 등)이 해당하는 `<template>` 및 `<style>` 부분만 안전하게 교체하거나 업데이트합니다.
+  - **스크립트 수정이 필요한 경우**, `@.ai/rules/development/expert-vue-scripting.md` 규칙을 참조하여 기존 패턴과의 일관성을 유지합니다.
   - 변경 부작용이 예상되는 경우, 사용자에게 해당 내용을 설명하고 승인을 요청합니다.
 
 ### C. 컴포넌트 테스트 및 오류 검증 (Testing & Validation)
