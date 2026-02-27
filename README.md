@@ -105,7 +105,7 @@ http://localhost:3000/preview/[컴포넌트이름]
 | 폴더/파일 | 역할 |
 |---|---|
 | `.ai/core.md` | 전체 워크플로우를 통제하는 최상위 오케스트레이터 지침 |
-| `.ai/rules/development/` | 전문 하위 에이전트 가이드 (Figma 변환, 레거시 변환, 프리뷰, 테스트) |
+| `.ai/rules/development/` | 전문 하위 에이전트 가이드 (Figma 변환, 레거시 변환, 스크립트 로직, 프리뷰, 테스트) |
 | `.ai/rules/language/` | Vue, TypeScript, Tailwind 작성 규칙 |
 | `.ai/skills/` | 트리거 기반으로 동적 로드되는 스킬 정의 |
 | `.ai/config/` | 품질 게이트 기준 설정 (`quality.yaml`) |
@@ -123,6 +123,7 @@ http://localhost:3000/preview/[컴포넌트이름]
 |---|---|
 | `expert-figma-to-vue` | Figma 노드 데이터를 받아 Vue SFC 컴포넌트를 생성·수정 |
 | `expert-legacy-to-vue` | 기존 HTML/CSS/JS 레거시 코드를 Vue SFC로 변환 |
+| `expert-vue-scripting` | Vue 컴포넌트의 `<script setup>` 인터랙션 로직 구현 패턴 정의 (P01~P14) |
 | `expert-nuxt-preview` | 생성된 컴포넌트를 로컬 브라우저에서 즉시 확인할 수 있도록 프리뷰 환경 구성 |
 | `expert-vue-tester` | 생성된 컴포넌트에 대한 유닛 테스트를 작성하고 오류를 검증 |
 
@@ -143,7 +144,12 @@ http://localhost:3000/preview/[컴포넌트이름]
      - Windows: `start http://localhost:3000/preview/[ComponentName]`
      - macOS/Linux: `open http://localhost:3000/preview/[ComponentName]`
 
-4. **`expert-vue-tester`** — 테스트 에이전트
+4. **`expert-vue-scripting`** — 스크립트 로직 에이전트
+   - `expert-figma-to-vue` 및 `expert-legacy-to-vue`가 `<script setup lang="ts">` 로직을 작성할 때 참조하는 구현 패턴을 정의합니다.
+   - 컴포넌트 유형(Controlled / Stateful / Display / Interactive UI / Animation)을 판별하고 14개 패턴(P01~P14)을 적용합니다.
+   - Composition API 전용, `any` 타입 금지, DOM 직접 조작 금지 등 HARD 규칙을 강제합니다.
+
+5. **`expert-vue-tester`** — 테스트 에이전트
    - 렌더링, Props, 사용자 인터랙션, 접근성(aria-*)을 검증하는 유닛 테스트를 작성합니다.
    - 커버리지 최소 80% 목표이며, 심각한 에러 발견 시 원본 에이전트에 피드백하여 자동 수정합니다.
 

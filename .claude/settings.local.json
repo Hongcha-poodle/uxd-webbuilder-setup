@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls c:UsersRichDesktopuxd-webbuilder-setup/*.md)",
+      "Bash(ls c:UsersRichDesktopuxd-webbuilder-setup/.ai/*.md)"
+    ]
+  }
+}
