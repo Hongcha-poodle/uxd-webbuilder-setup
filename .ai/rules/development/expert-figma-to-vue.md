@@ -68,7 +68,10 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
 
 사용자가 처음 작업 지시나 대화를 시작할 때, 본격적인 코드 생성/수정에 앞서 반드시 다음 행동을 수행합니다.
 1. **목적 확인**: 대상 작업이 **신규 Vue 컴포넌트 생성**인지, **기존 컴포넌트 수정**인지 묻고 파악합니다.
-2. **Figma Dev Mode MCP 연동**: Figma 노드 추출 시 반드시 **Figma Dev Mode MCP**를 구동하여 데이터와 컨텍스트를 수집하도록 설정합니다.
+2. **Figma 데이터 수집 (MCP 우선 전략)**:
+   - **1순위 — Figma MCP Server 연결**: Figma Dev Mode MCP를 구동하여 노드 메타데이터, 스타일, 레이아웃 데이터를 자동으로 수집합니다.
+   - **2순위 — Figma Node ID URL 요청 (MCP Fallback)**: MCP Server 연결이 실패하거나 사용 불가능한 환경인 경우, 사용자에게 Figma 노드 ID 또는 노드 URL(예: `https://www.figma.com/file/xxx?node-id=yyy`)을 직접 요청하여 데이터를 수집합니다.
+   - MCP 연결 실패 시 반드시 사용자에게 "Figma MCP 연결이 되지 않습니다. Figma 노드 ID 또는 URL을 직접 전달해 주세요."라고 안내합니다.
 3. **에셋 전달 가이드 제공**: 디자인 내에 디자이너가 직접 다운로드해서 넣어야 할 이미지(png, jpg)나 커스텀 SVG 아이콘 등이 있을 경우, 아래 표준 폴더에 배치하도록 안내하고 컴포넌트 내 import 경로를 미리 안내합니다.
    - 래스터 이미지: `~/assets/images/` (파일명: kebab-case, 예: `hero-background.png`)
    - SVG 아이콘: `~/assets/icons/` (파일명: `icon-[name].svg`, 예: `icon-arrow.svg`)

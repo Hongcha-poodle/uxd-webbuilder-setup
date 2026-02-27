@@ -1,6 +1,6 @@
 # AI Component Generation Workflow
 
-이 프로젝트는 굿리치 UX디자인팀의 웹빌더 Figma 디자인을 기반으로 고품질의 Vue/Nuxt 컴포넌트 생성을 자동화하고 검증하기 위한 AI 오케스트레이션 및 에이전트 기반 개발 환경입니다.
+이 프로젝트는 굿리치 UX디자인팀의 웹빌더 Figma 디자인 또는 기존 레거시 HTML/CSS/JS 코드를 기반으로 고품질의 Vue/Nuxt 컴포넌트 생성을 자동화하고 검증하기 위한 AI 오케스트레이션 및 에이전트 기반 개발 환경입니다.
 
 ## 🛠️ 기술 스택 (Tech Stack)
 - **프레임워크:** Vue 3.5+, Nuxt 4.2+
@@ -13,11 +13,11 @@
 이 프로젝트는 자체적인 AI 에이전트 시스템 체계를 갖추고 있습니다. 루트의 `.ai/` 및 `.agent/` 폴더에 핵심 지침들이 구성되어 있습니다.
 
 - **`.ai/core.md`**: 워크플로우를 통제하는 최상위 오케스트레이터 지침 (AI 행동, 컴포넌트 저장소 라우팅, 품질 기준)
-- **`.ai/rules/development/`**: 전문 개발 하위 에이전트 가이드 (예: `expert-figma-to-vue.md`, `expert-nuxt-preview.md`, `expert-vue-tester.md`)
+- **`.ai/rules/development/`**: 전문 개발 하위 에이전트 가이드 (예: `expert-figma-to-vue.md`, `expert-legacy-to-vue.md`, `expert-nuxt-preview.md`, `expert-vue-tester.md`)
 - **`.ai/rules/language/`**: 사용 언어(Vue, TypeScript, Tailwind) 작성 규칙
-- **`.ai/skills/`**: 트리거 기반으로 동적 로드되는 스킬 정의 (예: `figma-to-vue.md`)
+- **`.ai/skills/`**: 트리거 기반으로 동적 로드되는 스킬 정의 (예: `figma-to-vue.md`, `legacy-to-vue.md`)
 - **`.ai/config/`**: 품질 게이트 기준 설정 (예: `quality.yaml`)
-- **`.agent/workflows/`**: 에이전트 실행 순서를 정의하는 오케스트레이션 스크립트 (`/figma-to-code`, `/component-validation`)
+- **`.agent/workflows/`**: 에이전트 실행 순서를 정의하는 오케스트레이션 스크립트 (`/figma-to-code`, `/legacy-to-vue`, `/component-validation`)
 - **`.agent/rules/`**: Google Antigravity용 프로젝트 전역 지침 (`rules.md`)
 - **`.github/copilot-instructions.md`**: GitHub Copilot용 프로젝트 컨텍스트 지침
 - **`CLAUDE.md`**: Claude Code용 프로젝트 전역 지침 (`.ai/core.md` 및 `.ai/rules/` 참조 강제)
@@ -30,24 +30,34 @@
 | 에이전트 | 파일 | 역할 |
 |---|---|---|
 | `expert-figma-to-vue` | `.ai/rules/development/expert-figma-to-vue.md` | Figma 노드 데이터를 받아 Vue SFC 컴포넌트를 생성·수정하는 핵심 에이전트 |
+| `expert-legacy-to-vue` | `.ai/rules/development/expert-legacy-to-vue.md` | 기존 HTML/CSS/JS 레거시 코드를 Vue SFC 컴포넌트로 변환하는 에이전트 |
 | `expert-nuxt-preview` | `.ai/rules/development/expert-nuxt-preview.md` | 생성된 컴포넌트를 로컬 브라우저에서 즉시 확인할 수 있도록 프리뷰 환경을 구성하는 에이전트 |
 | `expert-vue-tester` | `.ai/rules/development/expert-vue-tester.md` | 생성된 컴포넌트에 대한 유닛 테스트 코드를 작성하고 타입·렌더링 오류를 검증하는 에이전트 |
 
 **각 에이전트 상세 역할:**
 
-1. **`expert-figma-to-vue`** — 컴포넌트 생성 에이전트
-   - Figma Dev Mode MCP를 통해 노드 데이터를 수집하고, 선택한 **레이어명을 PascalCase로 변환**하여 컴포넌트 파일명으로 사용합니다. (예: `"login form"` → `LoginForm.vue`)
+1. **`expert-figma-to-vue`** — Figma 컴포넌트 생성 에이전트
+   - **Figma MCP 우선 전략**: 1순위로 Figma Dev Mode MCP Server를 통해 노드 데이터를 자동 수집합니다. MCP 연결이 실패할 경우 2순위로 사용자에게 Figma Node ID 또는 URL을 직접 요청합니다.
+   - 선택한 **레이어명을 PascalCase로 변환**하여 컴포넌트 파일명으로 사용합니다. (예: `"login form"` → `LoginForm.vue`)
    - Tailwind CSS + TypeScript 기반의 `.vue` SFC를 생성하고 **`components/`** 폴더에 저장합니다.
    - `data-node-id` 속성 보존, 시맨틱 HTML, 접근성(aria) 적용을 포함한 9가지 Hard Rule을 준수합니다.
    - 기존 컴포넌트 수정 시 비즈니스 로직(`ref`, `reactive`, lifecycle hook 등)을 보존하고 템플릿·스타일만 교체합니다.
 
-2. **`expert-nuxt-preview`** — 프리뷰 에이전트
+2. **`expert-legacy-to-vue`** — 레거시 변환 에이전트
+   - 기존 HTML/CSS/JavaScript 레거시 코드를 분석하여 Vue 3 SFC로 변환합니다.
+   - JS 패턴 변환: ES6 `class`, `querySelector`, `addEventListener`, `classList` 등 → Composition API(`ref`, `reactive`, `@click`, `:class` 등)로 매핑합니다.
+   - CSS 변수(`var(--color-*)`) → Tailwind `theme.extend`에 매핑하여 표준 유틸리티 클래스로 사용합니다. 임의값(`text-[var(...)]`) 사용을 금지합니다.
+   - 글로벌 함수/타 컴포넌트 직접 참조 → `<!-- TODO -->` 플레이스홀더 삽입 및 **Dependencies Report** 작성으로 추적합니다.
+   - 컴포넌트 파일명은 사용자에게 직접 확인하며, 미제공 시 2~3개 후보를 제안합니다.
+   - 복수 레거시 파일(HTML + CSS + JS)을 단일 `.vue` 파일로 병합하고, 10가지 Hard Rule을 준수합니다.
+
+3. **`expert-nuxt-preview`** — 프리뷰 에이전트
    - Storybook 없이 `pages/preview/[name].vue` 동적 라우팅을 활용해 컴포넌트를 브라우저에서 즉시 확인합니다.
    - 개발 서버(포트 3000) 상태를 확인하고, OS에 맞는 명령어로 브라우저를 자동으로 엽니다.
      - Windows: `start http://localhost:3000/preview/[ComponentName]`
      - macOS/Linux: `open http://localhost:3000/preview/[ComponentName]`
 
-3. **`expert-vue-tester`** — 테스트 에이전트
+4. **`expert-vue-tester`** — 테스트 에이전트
    - 생성된 컴포넌트의 렌더링, Props·기본값, 사용자 인터랙션(click, emit), 접근성(aria-*)을 검증하는 유닛 테스트를 작성합니다.
    - 테스트 파일은 `[ComponentName].spec.ts` 형식으로 저장하며, 커버리지 최소 80%를 목표로 합니다.
    - 심각한 에러 발견 시 `expert-figma-to-vue`에게 피드백하여 자동 수정(Self-Correction)을 유도합니다.
@@ -59,21 +69,40 @@
 | 워크플로우 | 파일 | 실행 시점 |
 |---|---|---|
 | `figma-to-code` | `.agent/workflows/figma-to-code.md` | Figma 디자인 → Vue 컴포넌트 변환 시 |
+| `legacy-to-vue` | `.agent/workflows/legacy-to-vue.md` | 레거시 HTML/CSS/JS → Vue 컴포넌트 변환 시 |
 | `component-validation` | `.agent/workflows/component-validation.md` | 컴포넌트 생성·수정 완료 후 QA 단계 |
+
+**작업 유형 선택:**
+
+컴포넌트 작업 요청 시, 오케스트레이터(`core.md`)가 먼저 아래 3가지 작업 유형 중 하나를 선택하도록 안내합니다:
+
+| 선택 | 작업 유형 | 라우팅 |
+|------|----------|--------|
+| 1 | Figma → Vue 컴포넌트 구현 | `/figma-to-code` 워크플로우 |
+| 2 | 기존 Vue 컴포넌트 수정 | 해당 에이전트에 직접 위임 |
+| 3 | Legacy → Vue 컴포넌트 변환 | `/legacy-to-vue` 워크플로우 |
 
 **각 워크플로우 실행 순서:**
 
 ```
 [figma-to-code 워크플로우]
   1. 규칙 로드 (expert-figma-to-vue + vue-nuxt + typescript + tailwind)
-  2. Figma MCP로 노드 수집 → 레이어명을 PascalCase 파일명으로 확정
+  2. Figma 데이터 수집 (MCP 우선 → 실패 시 Node ID/URL 직접 요청)
+     → 레이어명을 PascalCase 파일명으로 확정
   3. .vue 파일 생성 → 사용자 리뷰 → components/ 에 저장
   4. component-validation 워크플로우로 핸드오프
+       ↓
+[legacy-to-vue 워크플로우]
+  1. 규칙 로드 (expert-legacy-to-vue + vue-nuxt + typescript + tailwind)
+  2. 소스 수집 (붙여넣기 or 파일 경로) → 사용자에게 PascalCase 파일명 확인
+  3. HTML/CSS/JS 분석 → .vue SFC 변환 → Dependencies Report 작성
+  4. 사용자 리뷰 → components/ 에 저장
+  5. component-validation 워크플로우로 핸드오프
        ↓
 [component-validation 워크플로우]
   1. 규칙 로드 (expert-vue-tester)
   2. 정적 분석 + 유닛 테스트 코드 작성
-  3. 에러 처리 (심각 → expert-figma-to-vue 피드백 / 경미 → .spec.ts 저장)
+  3. 에러 처리 (심각 → 원본 에이전트에 피드백 / 경미 → .spec.ts 저장)
   4. 프리뷰 URL 제공 → 브라우저 자동 오픈
 ```
 

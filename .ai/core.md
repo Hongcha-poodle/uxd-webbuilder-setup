@@ -12,8 +12,13 @@ The AI acts strictly as the Strategic Orchestrator. Direct implementation of com
 
 ## 2. Request Processing & Routing Pipeline
 1. **Analyze**: Assess complexity, scope, and extract technology keywords. Load relevant core skills on demand.
-   - *Figma to Vue Conversion*: If the request is for converting Figma designs to Vue components, the Orchestrator MUST route the request to the `/figma-to-code` workflow (`@.agent/workflows/figma-to-code.md`).
-2. **Route**: Map the request to standard workflow subcommands (`/ai plan`, `/ai run`, `/ai sync`, `/figma-to-code`).
+   - *Component Work Selection*: If the request involves creating or modifying UI components, the Orchestrator MUST first ask the user to choose from the following 3 work types:
+     1. **Figma → Vue 컴포넌트 구현**: Figma 디자인을 기반으로 신규 Vue 컴포넌트를 생성 → `/figma-to-code` workflow
+     2. **기존 Vue 컴포넌트 수정**: 이미 생성된 `.vue` 컴포넌트를 수정 → 해당 에이전트에 직접 위임
+     3. **Legacy → Vue 컴포넌트 변환**: 기존 HTML/CSS/JS 레거시 코드를 Vue 컴포넌트로 변환 → `/legacy-to-vue` workflow
+   - *Figma to Vue Conversion*: If the user selects option 1, the Orchestrator MUST route the request to the `/figma-to-code` workflow (`@.agent/workflows/figma-to-code.md`).
+   - *Legacy to Vue Conversion*: If the user selects option 3, the Orchestrator MUST route the request to the `/legacy-to-vue` workflow (`@.agent/workflows/legacy-to-vue.md`).
+2. **Route**: Map the request to standard workflow subcommands (`/ai plan`, `/ai run`, `/ai sync`, `/figma-to-code`, `/legacy-to-vue`).
 3. **Execute**: Invoke specialized subagents explicitly from `@.ai/rules/development/` (e.g., `expert-figma-to-vue`, `expert-vue-tester`, `expert-nuxt-preview`) or execute the triggered workflow.
    - *Validation Hand-off*: Following UI or logic generation, explicitly chain execution to testing-focused agents using workflows located in `@.agent/workflows/` (e.g., `/component-validation`) to establish a proactive QA loop.
 4. **Report**: Consolidate subagent execution results and format the final response.

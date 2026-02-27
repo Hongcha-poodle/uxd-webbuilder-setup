@@ -4,7 +4,7 @@ description: 생성된 프론트엔드 UI 컴포넌트의 품질을 보장하기
 
 # Component Validation Workflow
 
-`figma-to-code.md` 워크플로우 이후 실행되며, 작성된 Vue 컴포넌트의 무결성을 보장합니다.
+`figma-to-code.md` 또는 `legacy-to-vue.md` 워크플로우 이후 실행되며, 작성된 Vue 컴포넌트의 무결성을 보장합니다.
 
 ## Prerequisites
 - 생성되거나 수정이 완료된 1개 이상의 타겟 `.vue` 컴포넌트 파일.

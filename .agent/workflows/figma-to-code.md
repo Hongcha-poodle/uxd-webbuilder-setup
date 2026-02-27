@@ -15,7 +15,10 @@ description: Figma 디자인 스크린샷 또는 노드를 Vue 컴포넌트 코�
 
 2. **초기 확인 및 데이터 수집** → `expert-figma-to-vue` 위임:
    - 에이전트의 "대화 시작 시 초기 확인" 규칙에 따라 사용자 의도를 파악합니다.
-   - Figma Node ID가 주어진 경우: Figma MCP Server를 호출하여 노드 메타데이터를 수집합니다.
+   - **Figma 데이터 수집 (MCP 우선 전략)**:
+     - **1순위**: Figma MCP Server 연결을 시도하여 노드 메타데이터를 자동 수집합니다.
+     - **2순위 (Fallback)**: MCP 연결이 실패할 경우, 사용자에게 Figma 노드 ID 또는 URL을 직접 요청합니다.
+   - Figma 노드 데이터가 수집된 경우:
      - 노드의 `name` 속성(레이어명)을 **PascalCase**로 변환하여 컴포넌트 파일명으로 확정합니다.
      - 예: 레이어명 `"login form"` → 파일명 `LoginForm.vue`
    - 스크린샷이 주어진 경우: 시각적 분석으로 UI 요소를 역설계하고, 사용자에게 컴포넌트명을 확인합니다.
