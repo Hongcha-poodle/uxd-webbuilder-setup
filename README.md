@@ -1,4 +1,4 @@
-# GoodRich Webbuilder — UXD Team AI Component Workflow
+# GoodRich Web-builder: UXD Team AI Component Workflow
 
 굿리치 UX디자인팀의 웹빌더 Figma 디자인을 고품질의 Vue 컴포넌트로 자동 변환하고 브라우저에서 즉시 확인할 수 있는 AI 기반 개발 환경입니다.
 
