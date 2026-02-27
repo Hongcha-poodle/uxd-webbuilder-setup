@@ -159,26 +159,46 @@ http://localhost:3000/preview/[컴포넌트이름]
 | 2 | 기존 Vue 컴포넌트 수정 | 해당 에이전트에 직접 위임 |
 | 3 | Legacy → Vue 컴포넌트 변환 | `/legacy-to-vue` 워크플로우 |
 
-```
-[figma-to-code 워크플로우]
-  1. 규칙 로드 (expert-figma-to-vue + vue-nuxt + typescript + tailwind)
-  2. Figma 데이터 수집 (MCP 우선 → 실패 시 Node ID/URL 직접 요청)
-     → 레이어명을 PascalCase 파일명으로 확정
-  3. .vue 파일 생성 → 사용자 리뷰 → components/ 에 저장
-  4. component-validation 워크플로우로 핸드오프
-       ↓
-[legacy-to-vue 워크플로우]
-  1. 규칙 로드 (expert-legacy-to-vue + vue-nuxt + typescript + tailwind)
-  2. 소스 수집 (붙여넣기 or 파일 경로) → 사용자에게 PascalCase 파일명 확인
-  3. HTML/CSS/JS 분석 → .vue SFC 변환 → Dependencies Report 작성
-  4. 사용자 리뷰 → components/ 에 저장
-  5. component-validation 워크플로우로 핸드오프
-       ↓
-[component-validation 워크플로우]
-  1. 규칙 로드 (expert-vue-tester)
-  2. 정적 분석 + 유닛 테스트 코드 작성
-  3. 에러 처리 (심각 → 원본 에이전트에 피드백 / 경미 → .spec.ts 저장)
-  4. 프리뷰 URL 제공 → 브라우저 자동 오픈
+```mermaid
+flowchart TD
+    Start(["컴포넌트 작업 요청"])
+    Select{"AI 오케스트레이터\n작업 유형 선택"}
+    Start --> Select
+
+    Select -- "1. Figma to Vue" --> F1["규칙 로드\nexpert-figma-to-vue\nvue-nuxt / typescript / tailwind"]
+    Select -- "2. 기존 Vue 수정" --> Direct["해당 에이전트에\n직접 위임"]
+    Select -- "3. Legacy to Vue" --> L1["규칙 로드\nexpert-legacy-to-vue\nvue-nuxt / typescript / tailwind"]
+
+    F1 --> F2{"Figma 데이터 수집"}
+    F2 -- "MCP 성공" --> F3["레이어명을 PascalCase\n파일명으로 확정"]
+    F2 -- "MCP 실패" --> F2a["Node ID / URL\n직접 요청"]
+    F2a --> F3
+    F3 --> F4[".vue 파일 생성\n사용자 리뷰"]
+    F4 --> F5["components/ 에 저장"]
+
+    L1 --> L2["소스 수집\n붙여넣기 or 파일 경로"]
+    L2 --> L3["사용자에게\nPascalCase 파일명 확인"]
+    L3 --> L4["HTML/CSS/JS 분석\n.vue SFC 변환"]
+    L4 --> L5["Dependencies Report 작성"]
+    L5 --> L6["사용자 리뷰\ncomponents/ 에 저장"]
+
+    F5 --> V1
+    L6 --> V1
+    V1["규칙 로드\nexpert-vue-tester"]
+    V1 --> V2["정적 분석 +\n유닛 테스트 코드 작성"]
+    V2 --> V3{"에러 심각도 판단"}
+    V3 -- "심각" --> V4["원본 에이전트에 피드백\n자동 수정"]
+    V4 --> V2
+    V3 -- "경미" --> V5[".spec.ts 저장"]
+    V5 --> V6(["프리뷰 URL 제공\n브라우저 자동 오픈"])
+    Direct --> Done(["완료"])
+
+    style Start fill:#4f46e5,color:#fff,stroke:none
+    style Select fill:#f59e0b,color:#fff,stroke:none
+    style V6 fill:#10b981,color:#fff,stroke:none
+    style Done fill:#10b981,color:#fff,stroke:none
+    style V3 fill:#ef4444,color:#fff,stroke:none
+    style F2 fill:#3b82f6,color:#fff,stroke:none
 ```
 
 ---
