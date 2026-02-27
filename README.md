@@ -123,10 +123,10 @@ http://localhost:3000/preview/[컴포넌트이름]
 | `.ai/skills/` | 트리거 기반으로 동적 로드되는 스킬 정의 |
 | `.ai/config/` | 품질 게이트 기준 설정 (`quality.yaml`) |
 | `.agent/workflows/` | 에이전트 실행 순서를 정의하는 워크플로우 스크립트 |
-| `.agent/rules/` | Google Antigravity용 전역 지침 |
-| `.github/copilot-instructions.md` | GitHub Copilot용 프로젝트 컨텍스트 지침 |
-| `CLAUDE.md` | Claude Code용 전역 지침 |
-| `AGENTS.md` | OpenAI Codex용 전역 지침 |
+| `.agent/rules/` | Google Antigravity용 프로젝트 지침 |
+| `.github/copilot-instructions.md` | GitHub Copilot용 프로젝트 지침 |
+| `CLAUDE.md` | Claude Code용 프로젝트 지침 |
+| `AGENTS.md` | Codex용 프로젝트 지침 |
 
 ---
 
