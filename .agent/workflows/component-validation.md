@@ -21,7 +21,16 @@ description: 생성된 프론트엔드 UI 컴포넌트의 품질을 보장하기
    - **에러가 심각한 경우**: 결과를 원본 생성 에이전트(`expert-figma-to-vue` 또는 `expert-legacy-to-vue`)에게 피드백하여 Self-Correction을 유도합니다.
    - **에러가 없거나 경미한 경우**: `.spec.ts` 파일을 프로젝트에 저장하고, 검증 완료 보고서를 출력합니다.
 
-4. **프리뷰 URL 제공 및 브라우저 오픈**:
+4. **시각적 비교 교정 (Visual Diff Correction)**:
+   - 정적 검증이 통과된 후 `/visual-diff` 워크플로우(`@.agent/workflows/visual-diff.md`)를 호출합니다.
+   - Figma 원본 디자인과 브라우저 렌더링을 비교하여 시각적 차이점을 자동 교정합니다.
+   - 교정 시 회귀 방지 안전장치가 적용됩니다:
+     - 한 번에 1개 이슈만 수정
+     - 수정 후 악화 시 즉시 롤백
+     - 최대 5회 반복, 연속 2회 롤백 시 중단
+   - Figma 기준 이미지를 확보할 수 없는 경우 이 단계를 건너뛰고 프리뷰 URL 제공으로 진행합니다.
+
+5. **프리뷰 URL 제공 및 브라우저 오픈**:
    - `@.ai/rules/development/expert-nuxt-preview.md` 규칙에 따라 사용자에게 브라우저 확인 링크를 제공합니다.
    - `pages/preview/[name].vue` 라우터 구조가 없다면 스캐폴딩을 제안합니다.
    - 검증이 완료된 후, 사용자에게 다음과 같이 묻습니다:
