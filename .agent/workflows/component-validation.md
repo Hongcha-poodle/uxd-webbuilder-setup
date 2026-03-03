@@ -15,7 +15,8 @@ description: 생성된 프론트엔드 UI 컴포넌트의 품질을 보장하기
    - `@.ai/rules/development/expert-vue-tester.md` 를 읽고 에이전트 페르소나와 검증 기준을 적용합니다.
 
 2. **검증 실행** → `expert-vue-tester` 위임:
-   - 에이전트의 "작업 유형별 워크플로우" 규칙에 따라 정적 분석과 유닛 테스트 코드를 작성합니다.
+   - **Lint 검사 선행**: `nuxt prepare`가 완료된 상태(`./nuxt/` 디렉토리 존재)인지 확인 후 `npm run lint`를 실행합니다. `@nuxt/eslint` 기반의 lint 에러가 0건이어야 다음 단계로 진행합니다.
+   - 에이전트의 "작업 유형별 워크플로우" 규칙에 따라 정적 분석(타입 체크)과 유닛 테스트 코드를 작성합니다.
 
 3. **피드백 처리**:
    - **에러가 심각한 경우**: 결과를 원본 생성 에이전트(`expert-figma-to-vue` 또는 `expert-legacy-to-vue`)에게 피드백하여 Self-Correction을 유도합니다.
