@@ -20,12 +20,21 @@ description: 생성된 프론트엔드 UI 컴포넌트를 브라우저에서 동
   - 못 찾을 경우 렌더링 에러를 뱉는 Fallback UI 구현 포함.
   - 상단 바(top bar)에는 반드시 **목록 복귀 버튼**을 포함할 것: `<NuxtLink to="/preview">← 목록으로</NuxtLink>`
 
-### 2. 프리뷰 안내 문구 제공 (URL Hand-off)
+### 2. Raw 프리뷰 페이지 설치 (Setup Raw Preview Page)
+Visual Diff 워크플로우(`@.agent/workflows/visual-diff.md`)에서 스크린샷 캡처 시 사용하는 순수 컴포넌트 렌더링 페이지입니다.
+- 목적: `pages/preview/raw/[name].vue` 파일을 대상 프로젝트에 생성합니다.
+- 동작 로직:
+  - `defineAsyncComponent`를 이용하여 `~/components/${route.params.name}.vue`를 동적 마운트합니다.
+  - **상단 바, 목록 복귀 버튼 등 UI 크롬을 일체 포함하지 않습니다** — 순수 컴포넌트만 렌더링합니다.
+  - 못 찾을 경우 렌더링 에러를 뱉는 Fallback UI 구현 포함.
+- 용도: `expert-visual-diff` 에이전트가 `http://localhost:3000/preview/raw/[ComponentName]`에서 브라우저 스크린샷을 캡처하여 Figma 원본과 비교합니다.
+
+### 3. 프리뷰 안내 문구 제공 (URL Hand-off)
 코드 생성을 담당하는 다른 에이전트(`expert-figma-to-vue` 등)나 검증 워크플로우(`/component-validation`) 마지막에 다음과 같이 유저에게 브라우저 확인 링크를 제공하도록 돕습니다.
 - 예시: `http://localhost:3000/preview/AdinsuContFormHero`
 - 로컬 Dev 서버가 돌고 있다는 전제하에 바로 클릭해서 이동할 수 있도록 다이얼로그 가이드라인을 제공합니다.
 
-### 3. 브라우저 자동 오픈 (Auto Open)
+### 4. 브라우저 자동 오픈 (Auto Open)
 컴포넌트 생성 및 검증이 모두 완료된 시점에 다음 절차를 따릅니다.
 
 1. **사용자 확인 질문**: 아래 메시지로 사용자의 동의를 구합니다.
