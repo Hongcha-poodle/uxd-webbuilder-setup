@@ -12,14 +12,14 @@ The AI acts strictly as the Strategic Orchestrator. Direct implementation of com
 
 ## 2. Request Processing & Routing Pipeline
 1. **Analyze**: Assess complexity, scope, and extract technology keywords. Load relevant core skills on demand.
-   - [HARD] *Component Work Selection*: If the request involves creating or modifying UI components, the Orchestrator MUST first ask the user to choose from the following 3 work types:
-     1. **Figma → Vue 컴포넌트 구현**: Figma 디자인을 기반으로 신규 Vue 컴포넌트를 생성 → `/figma-to-code` workflow
-     2. **기존 Vue 컴포넌트 수정**: 이미 생성된 `.vue` 컴포넌트를 수정 → 해당 에이전트에 직접 위임
-     3. **Legacy → Vue 컴포넌트 변환**: 기존 HTML/CSS/JS 레거시 코드를 Vue 컴포넌트로 변환 → `/legacy-to-vue` workflow
+   - [HARD] *Component Work Selection*: If the request involves creating or modifying UI components, the Orchestrator MUST first ask the user to choose from the following 3 work types (presented in Korean per the Language-Aware Responses rule):
+     1. **Figma → Vue Component Implementation**: Create a new Vue component from a Figma design → `/figma-to-code` workflow
+     2. **Modify Existing Vue Component**: Edit an already-created `.vue` component → delegate directly to the relevant expert agent
+     3. **Legacy → Vue Component Conversion**: Convert legacy HTML/CSS/JS code into a Vue component → `/legacy-to-vue` workflow
    - *Figma to Vue Conversion*: If the user selects option 1, the Orchestrator MUST route the request to the `/figma-to-code` workflow (`@.agent/workflows/figma-to-code.md`).
    - *Legacy to Vue Conversion*: If the user selects option 3, the Orchestrator MUST route the request to the `/legacy-to-vue` workflow (`@.agent/workflows/legacy-to-vue.md`).
-2. **Route**: Map the request to standard workflow subcommands (`/ai plan`, `/ai run`, `/ai sync`, `/figma-to-code`, `/legacy-to-vue`).
-3. **Execute**: Invoke specialized subagents explicitly from `@.ai/rules/development/` (e.g., `expert-figma-to-vue`, `expert-vue-scripting`, `expert-vue-tester`, `expert-nuxt-preview`, `expert-visual-diff`) or execute the triggered workflow.
+2. **Route**: Map the request to the appropriate workflow (`/figma-to-code`, `/legacy-to-vue`, `/component-validation`, `/visual-diff`).
+3. **Execute**: Invoke specialized subagents explicitly from `@.ai/rules/development/` (e.g., `expert-figma-to-vue`, `expert-legacy-to-vue`, `expert-vue-scripting`, `expert-vue-tester`, `expert-nuxt-preview`, `expert-visual-diff`) or execute the triggered workflow.
    - *Visual Diff Correction*: After static validation passes for a created/modified component, invoke the `/visual-diff` workflow (`@.agent/workflows/visual-diff.md`) to visually compare the rendered output against the Figma source and apply corrections. Anti-regression safeguards are enforced: single-issue fix per iteration, immediate rollback on degradation, and a maximum of 5 iterations with early stop on 2 consecutive rollbacks.
    - *Validation Hand-off*: Following UI or logic generation, explicitly chain execution to testing-focused agents using workflows located in `@.agent/workflows/` (e.g., `/component-validation`) to establish a proactive QA loop.
 4. **Report**: Consolidate subagent execution results and format the final response.
@@ -32,7 +32,6 @@ Do not list full agent capabilities here. Use the following heuristic decision t
 3. Domain expertise needed? → Delegate to a domain-specific expert agent
 4. Workflow coordination needed? → Delegate to a workflow manager agent
 5. Complex multi-step tasks? → Delegate to a general-purpose strategy agent
-
 
 ## 4. Quality Gates & Safeguards
 - **LSP Quality Gates**: Zero errors, zero type errors, and zero lint errors are strictly required before finalizing the `run` phase. Configurations are managed in `@.ai/config/quality.yaml`.
