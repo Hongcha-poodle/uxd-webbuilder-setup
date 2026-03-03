@@ -8,8 +8,41 @@
 
 ## 컴포넌트 구조
 - 오직 Vue Single File Component (`.vue`)로 작성합니다.
-- 순서: `<script setup>` -> `<template>` -> `<style>` 순으로 작성합니다.
+- 블록 순서: `<script setup lang="ts">` → `<template>` → `<style scoped>` 순으로 작성합니다.
 - `app.vue` 및 레이아웃, 페이지 구성 시에는 내장 컴포넌트인 `<NuxtPage />` 와 파일 기반 라우팅을 활용합니다.
+
+## `<script setup>` 내부 코드 순서
+
+`<script setup lang="ts">` 블록 내부는 반드시 아래 7단계 순서를 준수합니다. 해당 단계가 없으면 건너뜁니다.
+
+```typescript
+// 1. Types — Props, Emits, 내부 상태에 사용할 타입 정의
+type Props = { ... }
+type Emits = { ... }
+type TabType = 'a' | 'b'
+
+// 2. Props & Emits — defineProps, defineEmits
+const props = withDefaults(defineProps<Props>(), { ... })
+const emit = defineEmits<Emits>()
+
+// 3. 상태 (State) — ref, reactive
+const value = ref('')
+const form = reactive({ ... })
+
+// 4. Computed — computed 파생 값
+const isValid = computed(() => ...)
+
+// 5. Watchers — watch, watchEffect
+watch(value, (next) => { ... })
+
+// 6. 핸들러 함수 — 이벤트 핸들러, 비즈니스 로직 함수
+const onNameInput = (event: Event) => { ... }
+const handleSubmit = () => { ... }
+
+// 7. Lifecycle 훅 — onMounted, onUnmounted 등
+onMounted(() => { ... })
+onUnmounted(() => { ... })
+```
 
 ## 에셋 참조 및 폴더 구조
 
@@ -34,3 +67,27 @@ assets/
 - 상태 값은 `ref` (원시 타입) 또는 `reactive` (객체)를 명확하게 구분하여 사용합니다.
 - 전역 상태가 필요한 경우 `useState` 등의 Nuxt 내장 컴포지저블을 사용합니다.
 - 컴포넌트의 인터랙션 로직(폼 입력, 유효성 검사, 탭 전환, 아코디언, 애니메이션 제어 등) 구현 시에는 `@.ai/rules/development/expert-vue-scripting.md`에 정의된 스크립트 패턴 가이드를 참조합니다.
+
+## Emit 명명 규칙
+
+Emit 이름은 사용 목적에 따라 두 가지 형식을 구분하여 사용합니다. 혼용을 금지합니다.
+
+| 목적 | 형식 | 예시 |
+|------|------|------|
+| `v-model` 연동 (값 전달) | `update:propName` (camelCase) | `update:modelValue`, `update:name`, `update:activeTab` |
+| 동작/이벤트 알림 (트리거) | `kebab-case` 동사형 | `tab-change`, `modal-open`, `form-submit`, `item-select` |
+
+```typescript
+// v-model 연동 — 부모가 값을 직접 바인딩할 때
+type Emits = {
+  (e: 'update:name', value: string): void
+}
+
+// 동작 알림 — 부모에게 이벤트 발생을 통보할 때
+type Emits = {
+  (e: 'tab-change', tab: TabType): void
+  (e: 'form-submit', data: FormData): void
+}
+```
+
+**금지 패턴**: 동작 이벤트에 `update:` prefix 사용 (`update:tab` → `tab-change`로 교체)

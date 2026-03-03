@@ -20,6 +20,27 @@ description: Vue 컴포넌트의 인터랙션 및 스크립트 로직 구현을 
 
 ## 컴포넌트 유형 판별 기준 (Component Type Decision)
 
+### 판별 시점 (When to Classify)
+
+컴포넌트 유형 판별은 **코드 생성 전에 반드시 선행**되어야 합니다.
+
+| 워크플로우 | 판별 시점 | 행동 |
+|-----------|---------|------|
+| **Figma → Vue** | Figma 노드 분석 완료 직후, 코드 작성 전 | 판별 결과를 오케스트레이터에게 보고 → 오케스트레이터가 사용자 확인 후 진행 |
+| **Legacy → Vue** | JS 클래스/함수 구조 분석 직후, 변환 전 | 판별 결과를 오케스트레이터에게 보고 → 오케스트레이터가 사용자 확인 후 진행 |
+| **기존 컴포넌트 수정** | 파일 읽기 완료 직후 | 기존 유형을 확인하고, 수정으로 유형이 바뀌는 경우 오케스트레이터를 통해 사용자에게 안내 |
+
+> **아키텍처 원칙**: 서브에이전트는 사용자와 직접 상호작용할 수 없습니다 (`core.md` §5). 모든 사용자 확인은 오케스트레이터를 통해 수행됩니다.
+
+**보고 형식 예시** (서브에이전트 → 오케스트레이터):
+```
+컴포넌트 유형 판별 결과: Stateful
+근거: 내부 유효성 검사 로직과 다단계 상태 전이(idle → codeSent → verified)가 필요합니다.
+오케스트레이터가 사용자에게 확인 요청 후 코드 생성을 진행해주세요.
+```
+
+---
+
 컴포넌트의 인터랙션 요구사항을 분석하여 아래 유형 중 하나로 분류한 뒤, 해당 유형의 구현 패턴을 적용합니다.
 
 | 유형 | 판별 기준 | 상태 관리 위치 | 대표 예시 |
@@ -53,7 +74,7 @@ type Props = {
 
 type Emits = {
   (e: 'update:name', value: string): void
-  (e: 'update:phone-number', value: string): void
+  (e: 'update:phoneNumber', value: string): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -122,23 +143,24 @@ const validateField = (field: string) => {
 
 ```vue
 <script setup lang="ts">
+// 3. State
 const rawPhone = ref('')
 
-// 숫자만 허용하는 입력 핸들러
-const onPhoneInput = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const digitsOnly = target.value.replace(/[^0-9]/g, '')
-  rawPhone.value = digitsOnly
-  target.value = digitsOnly // DOM 값도 동기화
-}
-
-// 포맷팅된 표시값
+// 4. Computed — 포맷팅된 표시값
 const formattedPhone = computed(() => {
   if (rawPhone.value.length === 8) {
     return rawPhone.value.replace(/(\d{4})(\d{4})/, '$1-$2')
   }
   return rawPhone.value
 })
+
+// 6. 핸들러 함수 — 숫자만 허용하는 입력 핸들러
+const onPhoneInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  const digitsOnly = target.value.replace(/[^0-9]/g, '')
+  rawPhone.value = digitsOnly
+  target.value = digitsOnly // DOM 값도 동기화
+}
 </script>
 ```
 

@@ -11,5 +11,38 @@
 - **Colors**: `bg-primary-orange`, `text-text-primary`, `bg-bg-light-gray`, `text-status-error` 등 테마별로 정의된 시맨틱/키(Key) 컬러를 사용하여 하드코딩된 헥스 코드(`bg-[#FF9B00]` 등) 사용을 피합니다.
 - **디자인 임의 값(Arbitrary values)**: 요소 크기나 여백(spacing), 폰트 사이즈 등에서 테마에 잡히지 않은 픽셀 단위(예: `w-[141px]`, `px-[20px]`, `text-[16px]`) 표현은 디자인 가이드(Figma)에 기반하여 허용합니다만, 공통화가 시급한 값은 설정에 반영하고 사용합니다.
 
+## 레이아웃 컨테이너 표준
+
+모든 컴포넌트는 아래의 레이아웃 제약을 반드시 준수합니다:
+
+- **최대 너비**: `max-w-container` (768px) — `tailwind.config.ts`의 `theme.extend.maxWidth.container`에 정의
+- **좌우 패딩**: `px-[20px]` — 컨텐츠가 컨테이너 안에서 좌우 20px 여백을 유지하며 fill
+- **기본 래퍼 클래스 조합**: `w-full max-w-container mx-auto px-[20px]`
+
+### 적용 원칙
+
+- **페이지 수준 컴포넌트**의 루트 엘리먼트 또는 최상위 컨텐츠 래퍼에 위 클래스를 적용합니다.
+- **하위(자식) 컴포넌트**가 이미 `max-w-container`를 적용한 부모 안에 렌더링되는 경우, 자식은 이 클래스를 중복 적용하지 않습니다.
+- 전체 너비 배경(full-bleed background)이 필요한 경우, 배경은 바깥 엘리먼트에, 컨텐츠는 안쪽 래퍼로 분리합니다:
+  ```html
+  <!-- full-bleed 배경 + 컨텐츠 제약 패턴 -->
+  <section class="w-full bg-bg-light-gray">
+    <div class="max-w-container mx-auto px-[20px]">
+      <!-- 실제 컨텐츠 -->
+    </div>
+  </section>
+  ```
+
+### 레이아웃 표준 예외
+
+아래 컴포넌트 유형은 `max-w-container` 및 `px-[20px]`를 적용하지 않습니다:
+
+| 유형 | 이유 | 대체 패턴 |
+|------|------|---------|
+| **모달 (Modal)** | 뷰포트 중앙 고정, 독자적 너비 필요 | `fixed inset-0 flex items-center justify-center` |
+| **바텀시트 (Bottom Sheet)** | 하단 전체 너비 차지 | `fixed bottom-0 inset-x-0 w-full` |
+| **전체화면 오버레이** | 뷰포트 100% 점유 | `fixed inset-0 w-full h-full` |
+| **툴팁/팝오버** | 앵커 기준 위치, 제약 너비 불필요 | `absolute` 포지셔닝 |
+
 ## 컴포넌트 구조화
 - 클래스가 너무 길어 가독성을 해치는 구조가 심화될 경우, 레이아웃/모듈을 하위 컴포넌트로 적절하게 분리하여 Vue 컴포넌트 단위로 재사용합니다. (`@apply` 지시어 사용 금지 권장)

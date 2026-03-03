@@ -49,7 +49,9 @@ npm install
 | Vue 3 | UI 컴포넌트 작성 언어 |
 | Tailwind CSS | 디자인 스타일 유틸리티 (클래스 기반 스타일링) |
 | TypeScript | 타입 안정성을 높인 JavaScript |
+| ESLint (`@nuxt/eslint`) | 코드 린트 검사. Nuxt 통합 설정 사용 |
 | Vitest | 컴포넌트 자동 테스트 도구 |
+| `@vue/test-utils` | Vue 컴포넌트 마운트 및 테스트 유틸리티 |
 
 ---
 
@@ -78,6 +80,23 @@ http://localhost:3000/preview/[컴포넌트이름]
 
 ---
 
+### 사용 가능한 명령어 (npm scripts)
+
+| 명령어 | 설명 |
+|---|---|
+| `npm run dev` | 로컬 개발 서버 실행 (포트 3000) |
+| `npm run build` | 프로덕션 빌드 |
+| `npm run preview` | 빌드 결과물 미리보기 |
+| `npm run prepare` | Nuxt 타입 생성 (`.nuxt/` 디렉토리 생성). `lint` 실행 전 필수 |
+| `npm run lint` | ESLint 코드 검사 (`nuxt prepare` 자동 포함) |
+| `npm run lint:fix` | ESLint 자동 수정 모드 |
+| `npm run test` | Vitest 단위 테스트 실행 |
+| `npm run test:watch` | Vitest 감시 모드 (파일 변경 시 자동 재실행) |
+
+> 💡 `npm run lint`는 내부적으로 `nuxt prepare`를 먼저 실행합니다. `.nuxt/` 디렉토리가 없는 상태에서도 바로 사용할 수 있습니다.
+
+---
+
 ### 기존 프로젝트에 AI 워크플로우만 추가하고 싶다면
 
 이미 개발 중인 프로젝트가 있다면, `.ai`, `.agent`, `.github` 폴더와 `CLAUDE.md`, `AGENTS.md` 파일만 복사해서 사용할 수 있습니다. 프로젝트 폴더에서 아래 스크립트를 실행하세요.
@@ -93,7 +112,9 @@ http://localhost:3000/preview/[컴포넌트이름]
 |---|---|
 | 프레임워크 | Vue 3.5+, Nuxt 4.2+ |
 | 언어 | TypeScript |
-| 스타일링 | Tailwind CSS |
+| 스타일링 | Tailwind CSS (시맨틱 컬러 토큰 `tailwind.config.ts`에 정의) |
+| 린트 | ESLint (`@nuxt/eslint` 통합) |
+| 테스트 | Vitest + `@vue/test-utils` |
 | 컴포넌트 프리뷰 | 동적 라우팅 기반 `pages/preview/[name].vue` |
 
 ---
@@ -138,7 +159,8 @@ http://localhost:3000/preview/[컴포넌트이름]
 | `expert-legacy-to-vue` | 기존 HTML/CSS/JS 레거시 코드를 Vue SFC로 변환 |
 | `expert-vue-scripting` | Vue 컴포넌트의 `<script setup>` 인터랙션 로직 구현 패턴 정의 (P01~P14) |
 | `expert-nuxt-preview` | 생성된 컴포넌트를 로컬 브라우저에서 즉시 확인할 수 있도록 프리뷰 환경 구성 |
-| `expert-vue-tester` | 생성된 컴포넌트에 대한 유닛 테스트를 작성하고 오류를 검증 |
+| `expert-vue-tester` | 린트 검사, 타입 체크, 유닛 테스트 작성 및 오류 검증 |
+| `expert-visual-diff` | Figma 원본과 브라우저 렌더링 결과를 비교하여 시각적 차이를 자동 교정 |
 
 ### 에이전트 상세 역할
 
@@ -163,8 +185,13 @@ http://localhost:3000/preview/[컴포넌트이름]
    - Composition API 전용, `any` 타입 금지, DOM 직접 조작 금지 등 HARD 규칙을 강제합니다.
 
 5. **`expert-vue-tester`** — 테스트 에이전트
+   - **린트 검사**: `nuxt prepare` 선행 후 `npm run lint`를 실행하여 ESLint 에러 0건 기준(`quality.yaml`)을 충족하는지 확인합니다.
    - 렌더링, Props, 사용자 인터랙션, 접근성(aria-*)을 검증하는 유닛 테스트를 작성합니다.
    - 커버리지 최소 80% 목표이며, 심각한 에러 발견 시 원본 에이전트에 피드백하여 자동 수정합니다.
+
+6. **`expert-visual-diff`** — 시각적 비교 에이전트
+   - Figma 원본 디자인과 브라우저 렌더링 결과를 스크린샷으로 비교합니다.
+   - 회귀 방지 안전장치: 한 번에 1개 이슈만 수정, 수정 후 악화 시 즉시 롤백, 최대 5회 반복, 연속 2회 롤백 시 중단합니다.
 
 ---
 
@@ -177,6 +204,13 @@ http://localhost:3000/preview/[컴포넌트이름]
 | 1 | Figma → Vue 컴포넌트 구현 | `/figma-to-code` 워크플로우 |
 | 2 | 기존 Vue 컴포넌트 수정 | 해당 에이전트에 직접 위임 |
 | 3 | Legacy → Vue 컴포넌트 변환 | `/legacy-to-vue` 워크플로우 |
+
+생성/수정 완료 후 아래 워크플로우가 자동으로 연계됩니다.
+
+| 워크플로우 | 역할 | 파일 |
+|---|---|---|
+| `/component-validation` | 린트 검사 → 타입 체크 → 유닛 테스트 → 시각적 비교 → 프리뷰 | `component-validation.md` |
+| `/visual-diff` | Figma 원본과 렌더링 비교, 회귀 방지 안전장치 적용 자동 교정 | `visual-diff.md` |
 
 ```mermaid
 flowchart TD
@@ -201,19 +235,25 @@ flowchart TD
     L4 --> L5["Dependencies Report 작성"]
     L5 --> L6["사용자 리뷰\ncomponents/ 에 저장"]
 
-    F5 --> V1
-    L6 --> V1
-    V1["규칙 로드\nexpert-vue-tester"]
-    V1 --> V2["정적 분석 +\n유닛 테스트 코드 작성"]
+    F5 --> V0
+    L6 --> V0
+    V0["Lint 검사\nnuxt prepare → npm run lint\n0 에러 필수"]
+    V0 --> V1["규칙 로드\nexpert-vue-tester"]
+    V1 --> V2["타입 체크 + 정적 분석 +\n유닛 테스트 코드 작성"]
     V2 --> V3{"에러 심각도 판단"}
     V3 -- "심각" --> V4["원본 에이전트에 피드백\n자동 수정"]
-    V4 --> V2
+    V4 --> V0
     V3 -- "경미" --> V5[".spec.ts 저장"]
-    V5 --> V6(["프리뷰 URL 제공\n브라우저 자동 오픈"])
+    V5 --> VD{"Visual Diff\nFigma vs 브라우저 비교"}
+    VD -- "차이 발견" --> VD1["1개 이슈 수정\n(최대 5회, 2회 롤백 시 중단)"]
+    VD1 --> VD
+    VD -- "일치 / 완료" --> V6(["프리뷰 URL 제공\n브라우저 자동 오픈"])
     Direct --> Done(["완료"])
 
     style Start fill:#4f46e5,color:#fff,stroke:none
     style Select fill:#f59e0b,color:#fff,stroke:none
+    style V0 fill:#8b5cf6,color:#fff,stroke:none
+    style VD fill:#f97316,color:#fff,stroke:none
     style V6 fill:#10b981,color:#fff,stroke:none
     style Done fill:#10b981,color:#fff,stroke:none
     style V3 fill:#ef4444,color:#fff,stroke:none
