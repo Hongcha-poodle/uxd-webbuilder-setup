@@ -11,5 +11,26 @@
 - **Colors**: `bg-primary-orange`, `text-text-primary`, `bg-bg-light-gray`, `text-status-error` 등 테마별로 정의된 시맨틱/키(Key) 컬러를 사용하여 하드코딩된 헥스 코드(`bg-[#FF9B00]` 등) 사용을 피합니다.
 - **디자인 임의 값(Arbitrary values)**: 요소 크기나 여백(spacing), 폰트 사이즈 등에서 테마에 잡히지 않은 픽셀 단위(예: `w-[141px]`, `px-[20px]`, `text-[16px]`) 표현은 디자인 가이드(Figma)에 기반하여 허용합니다만, 공통화가 시급한 값은 설정에 반영하고 사용합니다.
 
+## 레이아웃 컨테이너 표준
+
+모든 컴포넌트는 아래의 레이아웃 제약을 반드시 준수합니다:
+
+- **최대 너비**: `max-w-container` (768px) — `tailwind.config.ts`의 `theme.extend.maxWidth.container`에 정의
+- **좌우 패딩**: `px-[20px]` — 컨텐츠가 컨테이너 안에서 좌우 20px 여백을 유지하며 fill
+- **기본 래퍼 클래스 조합**: `w-full max-w-container mx-auto px-[20px]`
+
+### 적용 원칙
+
+- 컴포넌트의 **루트 엘리먼트** 또는 **최상위 컨텐츠 래퍼**에 위 클래스를 적용합니다.
+- 전체 너비 배경(full-bleed background)이 필요한 경우, 배경은 바깥 엘리먼트에, 컨텐츠는 안쪽 래퍼로 분리합니다:
+  ```html
+  <!-- full-bleed 배경 + 컨텐츠 제약 패턴 -->
+  <section class="w-full bg-bg-light-gray">
+    <div class="max-w-container mx-auto px-[20px]">
+      <!-- 실제 컨텐츠 -->
+    </div>
+  </section>
+  ```
+
 ## 컴포넌트 구조화
 - 클래스가 너무 길어 가독성을 해치는 구조가 심화될 경우, 레이아웃/모듈을 하위 컴포넌트로 적절하게 분리하여 Vue 컴포넌트 단위로 재사용합니다. (`@apply` 지시어 사용 금지 권장)

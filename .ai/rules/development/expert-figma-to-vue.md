@@ -64,6 +64,18 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
    - 하위 분류가 명확히 필요한 경우 `components/[카테고리]/` 하위에 저장할 수 있으나, 기본값은 `components/` 루트입니다.
    - 사용자가 명시적으로 다른 경로를 지시하지 않는 한 임의로 경로를 변경하지 않습니다.
 
+10. **레이아웃 컨테이너 표준**:
+    - 모든 컴포넌트는 **최대 너비 768px**, **좌우 패딩 20px** 레이아웃 표준을 준수합니다.
+    - 컴포넌트의 루트 엘리먼트 또는 최상위 컨텐츠 래퍼에 `w-full max-w-container mx-auto px-[20px]`를 적용합니다.
+    - 전체 너비 배경(full-bleed background)이 필요한 경우, 배경 엘리먼트와 컨텐츠 래퍼를 분리합니다:
+      ```html
+      <section class="w-full bg-bg-light-gray">
+        <div class="max-w-container mx-auto px-[20px]">
+          <!-- 실제 컨텐츠 -->
+        </div>
+      </section>
+      ```
+
 ## 대화 시작 시 초기 확인 (Initial Confirmations)
 
 사용자가 처음 작업 지시나 대화를 시작할 때, 본격적인 코드 생성/수정에 앞서 반드시 다음 행동을 수행합니다.
