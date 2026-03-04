@@ -37,7 +37,48 @@ http://localhost:3000/preview/[컴포넌트이름]
 
 ---
 
-## 2. 디자이너가 실제로 쓰는 요청 방식
+## 2. 업데이트 (워크플로우·오케스트레이터 최신화)
+
+오케스트레이터, 에이전트 규칙, 워크플로우가 업데이트되었을 때 터미널에서 아래 명령어로 내 프로젝트에 반영합니다.  
+**컴포넌트·소스 파일은 변경되지 않습니다.** `.ai/`, `.agent/`, `.github/`, `CLAUDE.md`, `AGENTS.md`만 덮어씁니다.
+
+### Windows (PowerShell)
+
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Hongcha-poodle/uxd-webbuilder-setup/main/update-windows.ps1" -OutFile "update-windows.ps1"; .\update-windows.ps1
+```
+
+또는 이미 레포를 클론한 경우:
+
+```powershell
+.\update-windows.ps1
+```
+
+### macOS / Linux
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Hongcha-poodle/uxd-webbuilder-setup/main/update-mac.sh | bash
+```
+
+또는 이미 레포를 클론한 경우:
+
+```bash
+bash update-mac.sh
+```
+
+### 업데이트되는 항목
+
+| 경로 | 역할 |
+|---|---|
+| `.ai/` | 오케스트레이터·코어 규칙 |
+| `.agent/` | 에이전트 워크플로우 |
+| `.github/` | Copilot 지시 파일 |
+| `CLAUDE.md` | Claude Code 지시 파일 |
+| `AGENTS.md` | Codex 지시 파일 |
+
+---
+
+## 3. 디자이너가 실제로 쓰는 요청 방식
 
 새 대화가 시작되면 AI가 먼저 아래 3가지 중 작업 유형을 묻습니다.
 
@@ -52,14 +93,14 @@ http://localhost:3000/preview/[컴포넌트이름]
 
 ---
 
-## 3. 결과 확인 위치
+## 4. 결과 확인 위치
 
 - 기본 프리뷰: `http://localhost:3000/preview/[ComponentName]`
 - Visual Diff 비교용 raw 프리뷰: `http://localhost:3000/preview/raw/[ComponentName]`
 
 ---
 
-## 4. 워크플로우 쉽게 이해하기
+## 5. 워크플로우 쉽게 이해하기
 
 - 상단(노란 박스): 어떤 작업인지 먼저 선택
 - 좌/우 분기: Figma 기반 생성 또는 Legacy 변환
@@ -119,7 +160,7 @@ flowchart TD
 
 ---
 
-## 5. 자주 쓰는 명령어만
+## 6. 자주 쓰는 명령어만
 
 ```bash
 npm run dev      # 개발 서버 실행
@@ -129,7 +170,7 @@ npm run test     # 테스트 실행
 
 ---
 
-## 6. 에셋 폴더 규칙
+## 7. 에셋 폴더 규칙
 
 ```text
 assets/
