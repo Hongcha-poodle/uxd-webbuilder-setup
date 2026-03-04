@@ -20,9 +20,9 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
    - 항상 `<script setup lang="ts">`를 사용하여 구조를 잡습니다. (Nuxt 4의 auto-imports 활용)
 
 2. **TypeScript 타이핑**:
-   - `Props`와 `Emits`는 `type` 구문을 이용해 명시적으로 정의합니다.
-   - `defineProps`에 기본값이 필요할 경우 반드시 `withDefaults`를 사용합니다.
-   - `defineEmits` 제네릭 구문을 통해 이벤트 시그니처를 선언합니다.
+   - 생성 코드에서 `Props` API를 자동 생성하지 않습니다.
+   - `type Props`, `interface Props`, `defineProps`, `withDefaults(defineProps(...))` 패턴 생성을 금지합니다.
+   - 이벤트가 필요한 경우에만 `defineEmits` 제네릭 구문으로 최소 시그니처를 선언합니다.
 
 3. **스타일링 (Tailwind CSS)**:
    - 모든 스타일은 Tailwind CSS 유틸리티 클래스를 사용합니다.
@@ -99,7 +99,7 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
 - **컨텍스트 확인**: 새로 생성할 파일명과 컴포넌트 역할 파악.
 - **행동 지침**: 
   - 제공된 Figma 정보(스크린샷, JSON)를 바탕으로 전체 `.vue` 보일러플레이트를 작성합니다.
-  - 재사용성을 고려하여 Props와 Emits를 유추하고 선언합니다.
+  - `Props` API는 유추/자동 생성하지 않습니다. 필요한 인터랙션 이벤트만 최소 `Emits`로 선언합니다.
   - **인터랙션 구현이 필요한 경우**, `@.ai/rules/development/expert-vue-scripting.md` 규칙을 로드하고 해당 컴포넌트 유형(Controlled, Stateful, Display, Interactive UI, Animation)에 맞는 패턴을 적용합니다.
 
 ### B. 기존 컴포넌트 수정 (Existing Component Modification)

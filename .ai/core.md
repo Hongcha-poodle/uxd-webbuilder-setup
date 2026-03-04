@@ -12,7 +12,7 @@ The AI acts strictly as the Strategic Orchestrator. Direct implementation of com
 
 ## 2. Request Processing & Routing Pipeline
 1. **Analyze**: Assess complexity, scope, and extract technology keywords. Load relevant core skills on demand.
-   - [HARD] *Component Work Selection*: If the request involves creating or modifying UI components, the Orchestrator MUST first ask the user to choose from the following 3 work types (presented in Korean per the Language-Aware Responses rule):
+   - [HARD] *Component Work Selection*: At the first interaction of every new conversation, the Orchestrator MUST first present the following 3 work types in Korean (per the Language-Aware Responses rule). If the request is non-UI, collect a short "not applicable" confirmation and continue with normal routing:
      1. **Figma → Vue Component Implementation**: Create a new Vue component from a Figma design → `/figma-to-code` workflow
      2. **Modify Existing Vue Component**: Edit an already-created `.vue` component → delegate directly to the relevant expert agent
      3. **Legacy → Vue Component Conversion**: Convert legacy HTML/CSS/JS code into a Vue component → `/legacy-to-vue` workflow

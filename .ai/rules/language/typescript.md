@@ -7,22 +7,16 @@
 - **`type` alias 우선**: 일반적으로 객체 정의 및 속성 맵핑 시에는 `interface` 대신 `type` alias 사용을 권장합니다.
 
 ## Vue 컴포넌트(SFC) 내 타이핑
-- **Props**: `defineProps` 매크로에 제네릭 타입을 전달하여 Props의 타입을 명확하게 정의합니다.
-  ```typescript
-  type Props = {
-    title: string
-    isActive?: boolean
-  }
-  const props = withDefaults(defineProps<Props>(), { isActive: false })
-  ```
-- **Emits**: `defineEmits` 매크로 역시 외부 제네릭 타입 문법을 기반으로 이벤트 시그니처를 정의합니다.
+- **Props 자동 생성 금지**: 컴포넌트 자동 생성 결과물에서는 `type Props`, `interface Props`, `defineProps`, `withDefaults(defineProps(...))` 패턴을 사용하지 않습니다. `Props`는 개발팀이 상황에 맞게 수동 설계합니다.
+- **Emits**: `defineEmits` 매크로는 외부 제네릭 타입 문법을 기반으로 이벤트 시그니처를 최소 범위로 정의합니다.
   ```typescript
   type Emits = {
-    (e: 'update:active', value: boolean): void
     (e: 'click-event'): void
+    (e: 'form-submit', payload: { name: string }): void
   }
   const emit = defineEmits<Emits>()
   ```
 
 ## 전역 타입 및 인터페이스
 - 비즈니스 로직과 깊게 연관된 공통 타입, API 응답 인터페이스 등은 `types/` 디렉토리를 활용하여 공통으로 선언하고 재구현을 방지합니다.
+

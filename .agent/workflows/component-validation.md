@@ -15,7 +15,7 @@ description: 생성된 프론트엔드 UI 컴포넌트의 품질을 보장하기
    - `@.ai/rules/development/expert-vue-tester.md` 를 읽고 에이전트 페르소나와 검증 기준을 적용합니다.
 
 2. **검증 실행** → `expert-vue-tester` 위임:
-   - **Lint 검사 선행**: `nuxt prepare`가 완료된 상태(`./nuxt/` 디렉토리 존재)인지 확인 후 `npm run lint`를 실행합니다. `@nuxt/eslint` 기반의 lint 에러가 0건이어야 다음 단계로 진행합니다.
+   - **Lint 검사 선행**: `nuxt prepare`가 완료된 상태(`.nuxt/` 디렉토리 존재)인지 확인 후 `npm run lint`를 실행합니다. `@nuxt/eslint` 기반의 lint 에러가 0건이어야 다음 단계로 진행합니다.
    - 에이전트의 "작업 유형별 워크플로우" 규칙에 따라 정적 분석(타입 체크)과 유닛 테스트 코드를 작성합니다.
 
 3. **피드백 처리**:
@@ -24,6 +24,7 @@ description: 생성된 프론트엔드 UI 컴포넌트의 품질을 보장하기
 
 4. **시각적 비교 교정 (Visual Diff Correction)**:
    - 정적 검증이 통과된 후 `/visual-diff` 워크플로우(`@.agent/workflows/visual-diff.md`)를 호출합니다.
+   - 타겟 컴포넌트가 여러 개인 경우, 컴포넌트별로 **순차 실행**합니다 (한 번에 1개 대상).
    - Figma 원본 디자인과 브라우저 렌더링을 비교하여 시각적 차이점을 자동 교정합니다.
    - 교정 시 회귀 방지 안전장치가 적용됩니다:
      - 한 번에 1개 이슈만 수정

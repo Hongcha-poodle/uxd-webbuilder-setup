@@ -15,7 +15,7 @@ description: Vue 컴포넌트의 인터랙션 및 스크립트 로직 구현을 
 3. **`any` 타입 금지**: 모든 상태, 이벤트 핸들러 파라미터, 유틸리티 함수에 명시적 타입을 부여합니다.
 4. **DOM 직접 조작 금지**: `document.querySelector`, `element.style.xxx = 'value'`, `classList.add/remove` 등 DOM 직접 조작 대신 반드시 Vue의 반응형 시스템(`ref`, `computed`, `:class`, `:style`, `v-if`, `v-show`)을 사용합니다.
 5. **`template ref` 사용 원칙**: DOM 측정(`scrollHeight`, `getBoundingClientRect`)이나 포커스 제어(`focus()`)처럼 반응형으로 대체할 수 없는 경우에만 `template ref`를 사용합니다.
-
+6. **`Props` 자동 생성 금지**: 생성 코드에서 `type Props`, `interface Props`, `defineProps`, `withDefaults(defineProps(...))` 패턴을 생성하지 않습니다. `Props`는 개발팀이 수동으로 추가합니다.
 ---
 
 ## 컴포넌트 유형 판별 기준 (Component Type Decision)
@@ -45,9 +45,9 @@ description: Vue 컴포넌트의 인터랙션 및 스크립트 로직 구현을 
 
 | 유형 | 판별 기준 | 상태 관리 위치 | 대표 예시 |
 |------|----------|--------------|----------|
-| **Controlled** | 부모가 `v-model`로 데이터를 제어해야 하는 경우 | 부모 (Props + Emit) | 단일 입력 필드, 체크박스 |
+| **Controlled (수동 구현)** | 부모가 `v-model`로 데이터를 제어해야 하는 경우 | 개발팀 수동 API 설계 | 단일 입력 필드, 체크박스 |
 | **Stateful** | 내부에 복잡한 상태 전이·유효성 검사가 존재하는 경우 | 내부 (`ref`/`reactive`) + 결과만 `emit` | 다단계 폼, SMS 인증 |
-| **Display** | 사용자 인터랙션 없이 데이터를 수신하여 표시하는 경우 | 없음 (Props → `computed`) | 정보 카드, 통계 표시 |
+| **Display** | 사용자 인터랙션 없이 데이터를 계산·표시하는 경우 | 내부/composable (`computed`) | 정보 카드, 통계 표시 |
 | **Interactive UI** | 탭, 아코디언, 캐러셀 등 UI 상태 전환이 주요 역할인 경우 | 내부 (`ref`) | 탭 메뉴, FAQ 아코디언 |
 | **Animation** | CSS 애니메이션과 JS 제어가 결합된 경우 | 내부 (`ref` + CSS 변수) | 무한 롤링, 슬라이더 |
 
@@ -55,38 +55,37 @@ description: Vue 컴포넌트의 인터랙션 및 스크립트 로직 구현을 
 
 ## 패턴별 구현 가이드 (Pattern Implementation Guide)
 
-### P01. 폼 입력 — Controlled 패턴
+### P01. 폼 입력 — Controlled 요구사항 대응 (수동 API 위임)
 
-부모 컴포넌트가 `v-model`로 값을 제어하는 단순 입력 컴포넌트에 적용합니다.
+`v-model` 기반 부모 제어가 필요한 경우에도, 자동 생성 코드는 `Props` API를 만들지 않습니다.
 
 **구현 원칙**:
-- Props로 현재 값을 수신하고, 변경 시 `emit('update:필드명', value)`로 부모에 전달합니다.
-- 컴포넌트 내부에 상태를 보유하지 않습니다.
-
-**이벤트 핸들러 네이밍**: `on[필드명][동작]` 형식 (예: `onNameInput`, `onPhoneNumberInput`)
+- 생성 코드에서는 내부 상태(`ref`) 기반으로 입력 흐름만 구성합니다.
+- 부모 연동 API(`Props`/`v-model`)는 개발팀이 수동 추가합니다.
+- 이벤트 알림이 필요한 경우 최소 `Emits`만 선언합니다.
 
 ```vue
 <script setup lang="ts">
-type Props = {
-  name?: string
-  phoneNumber?: string
-}
+const name = ref('')
+const phoneNumber = ref('')
 
 type Emits = {
-  (e: 'update:name', value: string): void
-  (e: 'update:phoneNumber', value: string): void
+  (e: 'name-input', value: string): void
+  (e: 'phone-input', value: string): void
 }
-
-const props = withDefaults(defineProps<Props>(), {
-  name: '',
-  phoneNumber: '',
-})
 
 const emit = defineEmits<Emits>()
 
 const onNameInput = (event: Event) => {
   const target = event.target as HTMLInputElement
-  emit('update:name', target.value)
+  name.value = target.value
+  emit('name-input', target.value)
+}
+
+const onPhoneNumberInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  phoneNumber.value = target.value
+  emit('phone-input', target.value)
 }
 </script>
 ```
@@ -302,19 +301,11 @@ const handleSubmit = () => {
 <script setup lang="ts">
 type TabType = 'damage' | 'life'
 
-type Props = {
-  defaultTab?: TabType
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  defaultTab: 'damage',
-})
-
 const emit = defineEmits<{
   (e: 'tab-change', tab: TabType): void
 }>()
 
-const activeTab = ref<TabType>(props.defaultTab)
+const activeTab = ref<TabType>('damage')
 
 const tabs: { key: TabType; label: string }[] = [
   { key: 'damage', label: '손해보험사' },
@@ -406,28 +397,17 @@ FAQ, 상세 정보 펼치기/접기 UI에 적용합니다.
 
 ```vue
 <script setup lang="ts">
-type Props = {
-  mode?: 'single' | 'multiple'
-  defaultOpen?: number[]
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  mode: 'multiple',
-  defaultOpen: () => [0],
-})
-
-const openItems = ref<Set<number>>(new Set(props.defaultOpen))
+const mode = ref<'single' | 'multiple'>('multiple')
+const openItems = ref<Set<number>>(new Set([0]))
 
 const toggle = (index: number) => {
-  if (props.mode === 'single') {
-    // 단일 모드: 이미 열린 항목 클릭 시 닫기, 아니면 교체
+  if (mode.value === 'single') {
     if (openItems.value.has(index)) {
       openItems.value = new Set()
     } else {
       openItems.value = new Set([index])
     }
   } else {
-    // 복수 모드: 토글
     const next = new Set(openItems.value)
     if (next.has(index)) {
       next.delete(index)
@@ -442,7 +422,6 @@ const isOpen = (index: number) => openItems.value.has(index)
 </script>
 
 <template>
-  <!-- 아코디언 아이템 -->
   <div
     v-for="(item, index) in items"
     :key="index"
@@ -456,7 +435,6 @@ const isOpen = (index: number) => openItems.value.has(index)
       <span>{{ item.title }}</span>
     </button>
 
-    <!-- CSS grid 트릭으로 높이 애니메이션 -->
     <div
       :id="`panel-${index}`"
       class="grid transition-[grid-template-rows] duration-350 ease-[cubic-bezier(0.4,0,0.2,1)]"
@@ -565,30 +543,22 @@ onUnmounted(() => {
 
 ### P11. 데이터 표시 — Display 컴포넌트
 
-외부 데이터를 Props로 수신하여 파생 데이터를 계산·표시하는 경우에 적용합니다.
+내부 데이터 또는 composable 결과를 계산·표시하는 경우에 적용합니다.
 
 **구현 원칙**:
-- 비즈니스 로직 연산은 `computed`로 처리하여 Props 변경 시 자동으로 재계산됩니다.
-- 내부 `ref` 상태를 두지 않습니다 (순수 파생).
+- 비즈니스 로직 연산은 `computed`로 처리하여 상태 변경 시 자동으로 재계산됩니다.
+- 생성 코드에서 `Props` 입력 계약은 만들지 않습니다.
 - 복잡한 연산 로직은 별도 유틸리티 함수 또는 composable로 분리합니다.
 
 ```vue
 <script setup lang="ts">
-type Props = {
-  userName: string
-  birthDate: string // YYYYMMDD
-}
+const birthDate = ref('19900101') // 실제 데이터 주입은 개발팀에서 수동 연결
 
-const props = defineProps<Props>()
-
-// 순수 연산 함수 (composable 또는 utils로 분리 가능)
-const calculateInsuranceAge = (birthDate: string) => {
-  // 계산 로직...
+const calculateInsuranceAge = (value: string) => {
   return { age: 0, daysLeft: 0, increaseDate: { year: 0, month: 0, day: 0 } }
 }
 
-// Props가 변경되면 자동 재계산
-const insuranceInfo = computed(() => calculateInsuranceAge(props.birthDate))
+const insuranceInfo = computed(() => calculateInsuranceAge(birthDate.value))
 </script>
 ```
 
@@ -636,24 +606,21 @@ type InsurerItem = {
   type: 'damage' | 'life'
 }
 
-const props = defineProps<{ items: InsurerItem[] }>()
-
+const items = ref<InsurerItem[]>([])
 const activeTab = ref<'damage' | 'life'>('damage')
 
 const filteredItems = computed(() =>
-  props.items.filter(item => item.type === activeTab.value)
+  items.value.filter(item => item.type === activeTab.value)
 )
 </script>
 
 <template>
   <div class="track">
-    <!-- 원본 그룹 -->
     <div class="group">
       <div v-for="item in filteredItems" :key="item.code">
         <img :src="item.logo" :alt="item.name" />
       </div>
     </div>
-    <!-- 복제 그룹 (무한 스크롤용) -->
     <div class="group" aria-hidden="true">
       <div v-for="item in filteredItems" :key="`dup-${item.code}`">
         <img :src="item.logo" :alt="item.name" />
@@ -706,7 +673,7 @@ onUnmounted(() => {
 | 레거시 패턴 | Vue 변환 | 비고 |
 |------------|---------|------|
 | `window.globalFunc()` | `emit('이벤트명')` → 부모에서 처리 | 단방향 상향 통신 |
-| `document.querySelector('[data-component="..."]')` | 부모가 `v-model` / Props로 전달 | 단방향 하향 통신 |
+| `document.querySelector('[data-component="..."]')` | 부모가 상태를 관리하고 필요 API는 수동 구현 | 단방향 하향 통신 |
 | `new OtherComponent(el)` | `<ChildComponent :prop="value" />` | 선언적 자식 포함 |
 | `window.addEventListener('custom-event')` | `provide`/`inject` 또는 composable | 깊은 컴포넌트 트리 |
 | `document.body.style.overflow = 'hidden'` | composable (`useBodyScrollLock`) | 전역 부수효과 격리 |

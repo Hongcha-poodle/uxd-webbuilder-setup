@@ -5,7 +5,7 @@
 ## 핵심 원칙
 - **Vue 3 Composition API**: 모든 컴포넌트는 `<script setup>` 구문을 사용해야 합니다. Options API는 사용하지 않습니다.
 - **Nuxt 4 Auto-imports**: Nuxt 4의 내장 기능을 활용하여 `ref`, `reactive`, `computed`, `watch` 등은 명시적으로 import하지 않습니다. 컴포넌트 또한 `~/components/` 내에 존재하므로 별도의 import 없이 템플릿에서 바로 사용합니다 (`nuxt.config.ts` 설정에 따라 prefix 없이 사용 가능).
-
+- **Props 자동 생성 금지**: 컴포넌트 자동 생성 결과물에서는 `type Props`, `interface Props`, `defineProps`, `withDefaults(defineProps(...))` 패턴을 생성하지 않습니다.
 ## 컴포넌트 구조
 - 오직 Vue Single File Component (`.vue`)로 작성합니다.
 - 블록 순서: `<script setup lang="ts">` → `<template>` → `<style scoped>` 순으로 작성합니다.
@@ -13,16 +13,14 @@
 
 ## `<script setup>` 내부 코드 순서
 
-`<script setup lang="ts">` 블록 내부는 반드시 아래 7단계 순서를 준수합니다. 해당 단계가 없으면 건너뜁니다.
+`<script setup lang="ts">` 블록 내부는 반드시 아래 6단계 순서를 준수합니다. 해당 단계가 없으면 건너뜁니다.
 
 ```typescript
-// 1. Types — Props, Emits, 내부 상태에 사용할 타입 정의
-type Props = { ... }
+// 1. Types — Emits, 내부 상태에 사용할 타입 정의
 type Emits = { ... }
 type TabType = 'a' | 'b'
 
-// 2. Props & Emits — defineProps, defineEmits
-const props = withDefaults(defineProps<Props>(), { ... })
+// 2. Emits — defineEmits
 const emit = defineEmits<Emits>()
 
 // 3. 상태 (State) — ref, reactive
@@ -35,11 +33,9 @@ const isValid = computed(() => ...)
 // 5. Watchers — watch, watchEffect
 watch(value, (next) => { ... })
 
-// 6. 핸들러 함수 — 이벤트 핸들러, 비즈니스 로직 함수
+// 6. 핸들러 함수 & Lifecycle — 이벤트 핸들러, 비즈니스 로직, onMounted/onUnmounted
 const onNameInput = (event: Event) => { ... }
 const handleSubmit = () => { ... }
-
-// 7. Lifecycle 훅 — onMounted, onUnmounted 등
 onMounted(() => { ... })
 onUnmounted(() => { ... })
 ```
