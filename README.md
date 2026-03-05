@@ -98,6 +98,32 @@ bash update-mac.sh
 - 기본 프리뷰: `http://localhost:3000/preview/[ComponentName]`
 - Visual Diff 비교용 raw 프리뷰: `http://localhost:3000/preview/raw/[ComponentName]`
 
+### 모바일 기기에서 확인하기
+
+컴포넌트를 실제 모바일 기기에서 바로 확인할 수 있습니다.
+
+1. PC와 모바일을 **같은 Wi-Fi**에 연결합니다.
+2. PC의 IP를 확인합니다.
+
+```bash
+# Windows
+ipconfig    # Wi-Fi 어댑터의 IPv4 주소 확인
+
+# macOS
+ifconfig | grep "inet "
+```
+
+3. 모바일 브라우저에서 아래 주소를 엽니다.
+
+```text
+http://[PC의 IP]:3000/preview/mobile
+```
+
+예: PC IP가 `192.168.0.10`이면 → `http://192.168.0.10:3000/preview/mobile`
+
+- 모바일 갤러리에서 컴포넌트를 탭하면 풀스크린으로 렌더링됩니다.
+- PC용 개발자 UI 없이 컴포넌트만 깔끔하게 보여줍니다.
+
 ---
 
 ## 5. 워크플로우 쉽게 이해하기
