@@ -19,16 +19,16 @@ fi
 
 # 대상 폴더 생성
 mkdir -p "$TARGET_PATH/.ai"
-mkdir -p "$TARGET_PATH/.agent"
+mkdir -p "$TARGET_PATH/.agents"
 mkdir -p "$TARGET_PATH/.github"
 
 # .ai 폴더 업데이트 (오케스트레이터, 코어 규칙)
 echo "Updating .ai directory (orchestrator / core rules)..."
 cp -R "$TEMP_DIR/.ai/"* "$TARGET_PATH/.ai/"
 
-# .agent 폴더 업데이트 (에이전트 워크플로우)
-echo "Updating .agent directory (agent workflows)..."
-cp -R "$TEMP_DIR/.agent/"* "$TARGET_PATH/.agent/"
+# .agents 폴더 업데이트 (에이전트 워크플로우)
+echo "Updating .agents directory (agent workflows)..."
+cp -R "$TEMP_DIR/.agents/"* "$TARGET_PATH/.agents/"
 
 # .github 폴더 업데이트 (Copilot 지시 파일)
 echo "Updating .github directory (Copilot instructions)..."

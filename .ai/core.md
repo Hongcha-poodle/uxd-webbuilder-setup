@@ -16,12 +16,12 @@ The AI acts strictly as the Strategic Orchestrator. Direct implementation of com
      1. **Figma → Vue Component Implementation**: Create a new Vue component from a Figma design → `/figma-to-code` workflow
      2. **Modify Existing Vue Component**: Edit an already-created `.vue` component → delegate directly to the relevant expert agent
      3. **Legacy → Vue Component Conversion**: Convert legacy HTML/CSS/JS code into a Vue component → `/legacy-to-vue` workflow
-   - *Figma to Vue Conversion*: If the user selects option 1, the Orchestrator MUST route the request to the `/figma-to-code` workflow (`@.agent/workflows/figma-to-code.md`).
-   - *Legacy to Vue Conversion*: If the user selects option 3, the Orchestrator MUST route the request to the `/legacy-to-vue` workflow (`@.agent/workflows/legacy-to-vue.md`).
+   - *Figma to Vue Conversion*: If the user selects option 1, the Orchestrator MUST route the request to the `/figma-to-code` workflow (`@.agents/workflows/figma-to-code.md`).
+   - *Legacy to Vue Conversion*: If the user selects option 3, the Orchestrator MUST route the request to the `/legacy-to-vue` workflow (`@.agents/workflows/legacy-to-vue.md`).
 2. **Route**: Map the request to the appropriate workflow (`/figma-to-code`, `/legacy-to-vue`, `/component-validation`, `/visual-diff`).
 3. **Execute**: Invoke specialized subagents explicitly from `@.ai/rules/development/` (e.g., `expert-figma-to-vue`, `expert-legacy-to-vue`, `expert-vue-scripting`, `expert-vue-tester`, `expert-nuxt-preview`, `expert-visual-diff`) or execute the triggered workflow.
-   - *Visual Diff Correction*: After static validation passes for a created/modified component, invoke the `/visual-diff` workflow (`@.agent/workflows/visual-diff.md`) to visually compare the rendered output against the Figma source and apply corrections. Anti-regression safeguards are enforced: single-issue fix per iteration, immediate rollback on degradation, and a maximum of 5 iterations with early stop on 2 consecutive rollbacks.
-   - *Validation Hand-off*: Following UI or logic generation, explicitly chain execution to testing-focused agents using workflows located in `@.agent/workflows/` (e.g., `/component-validation`) to establish a proactive QA loop.
+   - *Visual Diff Correction*: After static validation passes for a created/modified component, invoke the `/visual-diff` workflow (`@.agents/workflows/visual-diff.md`) to visually compare the rendered output against the Figma source and apply corrections. Anti-regression safeguards are enforced: single-issue fix per iteration, immediate rollback on degradation, and a maximum of 5 iterations with early stop on 2 consecutive rollbacks.
+   - *Validation Hand-off*: Following UI or logic generation, explicitly chain execution to testing-focused agents using workflows located in `@.agents/workflows/` (e.g., `/component-validation`) to establish a proactive QA loop.
 4. **Report**: Consolidate subagent execution results and format the final response.
    - *Final Deliverable*: If UI components were created, the Orchestrator MUST provide the dynamic Nuxt preview URL (e.g. `http://localhost:3000/preview/[ComponentName]`) to the user as a clickable link based on the `expert-nuxt-preview` rules.
 

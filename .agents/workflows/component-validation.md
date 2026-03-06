@@ -23,7 +23,7 @@ description: 생성된 프론트엔드 UI 컴포넌트의 품질을 보장하기
    - **에러가 없거나 경미한 경우**: `.spec.ts` 파일을 프로젝트에 저장하고, 검증 완료 보고서를 출력합니다.
 
 4. **시각적 비교 교정 (Visual Diff Correction)**:
-   - 정적 검증이 통과된 후 `/visual-diff` 워크플로우(`@.agent/workflows/visual-diff.md`)를 호출합니다.
+   - 정적 검증이 통과된 후 `/visual-diff` 워크플로우(`@.agents/workflows/visual-diff.md`)를 호출합니다.
    - 타겟 컴포넌트가 여러 개인 경우, 컴포넌트별로 **순차 실행**합니다 (한 번에 1개 대상).
    - Figma 원본 디자인과 브라우저 렌더링을 비교하여 시각적 차이점을 자동 교정합니다.
    - 교정 시 회귀 방지 안전장치가 적용됩니다:
