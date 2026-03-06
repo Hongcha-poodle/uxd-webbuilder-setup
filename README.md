@@ -151,17 +151,17 @@ flowchart TD
 
     F5 --> V0
     L6 --> V0
-    V0["Lint 검사\nnuxt prepare → npm run lint\n0 에러 필수"]
-    V0 --> V1["규칙 로드\nexpert-vue-tester"]
-    V1 --> V2["타입 체크 + 정적 분석 +\n유닛 테스트 코드 작성"]
+    V0["Pre-flight Check\n파일 존재·파일명·.nuxt/·서버 확인"]
+    V0 --> V1["Lint 검사\n.nuxt/ 존재 시 prepare 생략\n0 에러 필수"]
+    V1 --> V2["코드 리뷰 수준 타입 점검"]
     V2 --> V3{"에러 심각도 판단"}
-    V3 -- "심각" --> V4["원본 에이전트에 피드백\n자동 수정"]
-    V4 --> V0
-    V3 -- "경미" --> V5[".spec.ts 저장"]
-    V5 --> VD{"Visual Diff\nFigma vs 브라우저 비교"}
-    VD -- "차이 발견" --> VD1["1개 이슈 수정\n(최대 5회, 2회 롤백 시 중단)"]
-    VD1 --> VD
-    VD -- "일치 / 완료" --> V6(["프리뷰 URL 제공\n브라우저 자동 오픈"])
+    V3 -- "심각" --> V4["원본 에이전트에 피드백\n자동 수정 (최대 3회)"]
+    V4 --> V1
+    V3 -- "통과" --> V6(["프리뷰 URL 제공\n브라우저 자동 오픈"])
+    V6 --> Vopt{"사용자 선택\n(Opt-in)"}
+    Vopt -- "유닛 테스트 요청" --> VT[".spec.ts 작성"]
+    Vopt -- "Visual Diff 요청" --> VD["Figma vs 브라우저 비교\n(최대 3회, 2회 롤백 시 중단)"]
+    Vopt -- "완료" --> Done2(["검증 완료"])
     Direct --> Done(["완료"])
 
     style Start fill:#4f46e5,color:#fff,stroke:none
