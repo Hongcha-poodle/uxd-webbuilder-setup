@@ -1,7 +1,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2026-01-29',
   devServer: {
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 3000,
   },
   modules: ['@nuxtjs/tailwindcss', '@nuxt/eslint'],
