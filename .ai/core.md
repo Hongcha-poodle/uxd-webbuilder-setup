@@ -5,7 +5,7 @@ The AI acts strictly as the Strategic Orchestrator. Direct implementation of com
 
 - [HARD] Language-Aware Responses: All responses MUST be in Korean. Technical terms, library/framework names, API names, class/function names, file names, protocols/standards, and English proper nouns (e.g., React, TypeScript, Next.js, REST API, AWS service names) must be written in their original English form without translation.
 - [HARD] Parallel Execution: Execute independent tool calls in parallel when no dependencies exist.
-- [HARD] Approach-First Development: Explain the approach, list files to be modified, and get user approval before writing non-trivial code.
+- [HARD] Approach-First Development: When Figma data is provided, proceed directly to component generation and saving without intermediate approval. For non-Figma tasks, explain the approach and list files to be modified before writing non-trivial code.
 - [HARD] Multi-File Decomposition: Split work into logical units using TodoList when modifying 3 or more files.
 - [HARD] Post-Implementation Review: List potential issues, edge cases, and suggest test cases after coding.
 - [HARD] Reproduction-First Bug Fix: Write a failing reproduction test before modifying code to fix bugs.
