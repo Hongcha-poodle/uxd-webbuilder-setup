@@ -20,7 +20,8 @@
       "Bash(taskkill //PID 22064 //F)",
       "Bash(taskkill //PID 21672 //F)",
       "Bash(rm /c/Users/Rich/Desktop/uxd-webbuilder-setup/modules/dev-qrcode.ts)",
-      "Bash(npm uninstall qrcode-terminal)"
+      "Bash(npm uninstall qrcode-terminal)",
+      "Bash(npx nuxi typecheck --no-emit)"
     ]
   }
 }

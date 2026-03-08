@@ -1,8 +1,19 @@
 export default defineNuxtConfig({
   compatibilityDate: '2026-01-29',
   devServer: {
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 3000,
+  },
+  vite: {
+    server: {
+      hmr: {
+        overlay: false,
+      },
+      watch: {
+        usePolling: false,
+        interval: 300,
+      },
+    },
   },
   modules: ['@nuxtjs/tailwindcss', '@nuxt/eslint'],
   css: ['~/assets/css/tailwind.css'],

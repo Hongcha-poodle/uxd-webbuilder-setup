@@ -46,3 +46,25 @@
 
 ## 컴포넌트 구조화
 - 클래스가 너무 길어 가독성을 해치는 구조가 심화될 경우, 레이아웃/모듈을 하위 컴포넌트로 적절하게 분리하여 Vue 컴포넌트 단위로 재사용합니다. (`@apply` 지시어 사용 금지 권장)
+
+## CSS 유실 방지 규칙 (Style Preservation)
+
+컴포넌트 수정 시 스타일이 의도치 않게 삭제되는 것을 방지하기 위한 규칙입니다.
+
+### Tailwind 클래스 보존
+- 컴포넌트 수정 시 **수정 대상이 아닌 요소의 Tailwind 클래스**를 삭제하거나 변경하지 않습니다.
+- 파일 전체를 다시 작성(rewrite)하는 경우, 반드시 원본의 모든 Tailwind 클래스가 결과물에 존재하는지 검증합니다.
+- 특히 `class` 속성이 긴 요소(3줄 이상)는 부분 수정 시 잘림(truncation)이 발생하기 쉬우므로, 수정 전후 클래스 수를 비교합니다.
+
+### `<style scoped>` 혼용 시 보호
+- Tailwind 클래스와 `<style scoped>`를 혼용하는 컴포넌트에서:
+  - `<template>` 수정 시 `<style scoped>` 블록을 누락하지 않도록 합니다.
+  - `<style scoped>` 내 CSS 선언 수정 시 Tailwind 클래스와의 충돌 여부를 확인합니다 (동일 속성의 중복 선언).
+  - 파일 저장 전 `<style scoped>` 블록이 원본 대비 동일하거나 의도적 수정만 포함하는지 확인합니다.
+
+### CSS 변수 → Tailwind 토큰 매핑
+- Figma에서 추출한 CSS 변수를 사용할 때, 다음 우선순위를 따릅니다:
+  1. `tailwind.config.ts`의 `theme.extend.colors`에 이미 등록된 시맨틱 토큰 사용 (예: `bg-primary-orange`)
+  2. 미등록 값은 arbitrary value 문법 사용 (예: `bg-[#FF9B00]`)
+  3. 반복적으로 사용되는 미등록 값은 `tailwind.config.ts`에 신규 토큰으로 등록 후 사용
+- arbitrary value로 하드코딩된 색상값이 `tailwind.config.ts`의 기존 토큰과 동일한 값인 경우, 반드시 토큰명으로 대체합니다 (예: `bg-[#FF9B00]` → `bg-primary-orange`).

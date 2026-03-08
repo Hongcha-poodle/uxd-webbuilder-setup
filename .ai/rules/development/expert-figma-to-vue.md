@@ -27,6 +27,15 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
 3. **스타일링 (Tailwind CSS)**:
    - 모든 스타일은 Tailwind CSS 유틸리티 클래스를 사용합니다.
    - 추가적인 스타일이 절대적으로 필요한 경우에만 `<style scoped>`를 사용하되, 가급적 Tailwind 클래스로 해결합니다. (예: 복잡한 그라데이션, 커스텀 base64 SVG 배경 등).
+   - **스타일 완전성 보존 (Style Integrity)**:
+     - `<style scoped>` 블록이 존재하는 컴포넌트를 수정할 때, 해당 블록의 모든 CSS 선언을 반드시 보존합니다. Tailwind 클래스 수정 시에도 `<style scoped>` 내 CSS를 삭제하거나 누락해서는 안 됩니다.
+     - Figma에서 추출한 CSS 변수(예: `--color-primary`)를 사용할 경우, 반드시 `tailwind.config.ts`의 `theme.extend`에 해당 토큰이 등록되어 있는지 확인하고, 미등록 시 arbitrary value 문법(예: `bg-[#FF9B00]`)으로 대체합니다.
+     - **[HARD] 컴포넌트 저장 전 CSS 무결성 체크리스트** — 파일 저장(Write/Edit) 직전에 반드시 수행:
+       1. `<template>` 내 모든 Tailwind 클래스가 누락 없이 존재하는지 확인
+       2. `<style scoped>` 블록이 존재하는 경우, 원본 대비 모든 CSS 선언이 보존되었는지 확인
+       3. 긴 `class` 속성(3줄 이상)이 잘림(truncation) 없이 완전한지 확인
+       4. 검증 실패 시 저장을 중단하고 누락된 스타일을 복원 후 재저장
+     - **[HARD] 파일 수정 시 부분 수정(partial edit) 우선**: `.vue` 파일을 수정할 때 가능한 한 파일 전체를 다시 쓰지 않고, 변경이 필요한 부분만 부분 수정합니다. 전체 rewrite는 `<style scoped>` 블록 유실의 주요 원인입니다.
 
 4. **Figma 노드 추적성 보존**:
    - 제공된 디자인 정보(JSON/Node 데이터)에 포함된 `data-node-id` 속성을 렌더링되는 HTML 요소에 그대로 보존하여 삽입해야 합니다.
@@ -110,8 +119,13 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
   - **스크립트 수정이 필요한 경우**, `@.ai/rules/development/expert-vue-scripting.md` 규칙을 참조하여 기존 패턴과의 일관성을 유지합니다.
   - 변경 부작용이 예상되는 경우, 사용자에게 해당 내용을 설명하고 승인을 요청합니다.
 
-### C. 컴포넌트 테스트 및 오류 검증 (Testing & Validation)
+### C. [HARD] 컴포넌트 테스트 및 오류 검증 (Testing & Validation — 필수 단계)
 - **컨텍스트 확인**: 컴포넌트 생성 또는 수정, 저장 작업이 완료된 후의 퀄리티 보장 단계.
+- **이 단계는 절대 건너뛸 수 없습니다.** 컴포넌트 저장 후 프리뷰 URL만 제공하고 검증을 생략하는 것을 금지합니다.
 - **행동 지침**:
-  - 생성이 완료되면 직접 로컬 테스트를 진행하지 않고, 전문 테스트 에이전트인 `expert-vue-tester` 및 `/component-validation` 워크플로우를 호출하여 후속 작업을 위임합니다.
+  - 생성이 완료되면 직접 로컬 테스트를 진행하지 않고, 전문 테스트 에이전트인 `expert-vue-tester` 및 `/component-validation` 워크플로우를 **반드시** 호출하여 후속 작업을 위임합니다.
+  - 검증 에이전트로 핸드오프 시, 다음 **스타일 컨텍스트**를 함께 전달합니다:
+    - `<style scoped>` 블록 포함 여부 및 주요 CSS 선언 목록
+    - 사용된 커스텀 Tailwind 토큰 목록 (예: `bg-primary-orange`, `text-text-primary`)
+    - Figma에서 참조한 CSS 변수가 있을 경우 해당 변수명과 매핑 정보
   - 테스트 에이전트로부터 접수된 피드백 리포트(타입 에러, 렌더링 에러 등)가 있을 경우, 이를 바탕으로 컴포넌트를 즉각 수정(Self-Correction)하고 다시 검증을 요청합니다.
