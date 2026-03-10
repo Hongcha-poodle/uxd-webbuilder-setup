@@ -27,10 +27,12 @@ description: 생성된 프론트엔드 UI 컴포넌트의 품질을 보장하기
    - **경미하거나 없음**: 생성 또는 갱신된 `.spec.ts` 파일을 저장하고 검증 완료 보고서를 출력합니다.
    - **[HARD] 이후 흐름은 `@.ai/rules/development/component-guardrails.md`의 validation chain guardrail을 따릅니다.**
 
-5. **[HARD] 시각적 비교 교정으로 핸드오프**:
-   - 정적 검증이 통과되면 `@.ai/rules/development/component-guardrails.md`의 validation chain guardrail에 따라 **반드시** `/visual-diff` 워크플로우(`@.agent/workflows/visual-diff.md`)를 호출합니다.
+5. **[HARD] 시각적 비교 교정 진행 여부 확인**:
+   - 정적 검증이 통과되면 `@.ai/rules/development/component-guardrails.md`의 validation chain guardrail에 따라 사용자에게 `/visual-diff` 진행 여부를 **반드시** 확인합니다.
+   - 사용자가 승인한 경우에만 `/visual-diff` 워크플로우(`@.agent/workflows/visual-diff.md`)를 호출합니다.
+   - 사용자가 보류하거나 거부한 경우, 그 사실을 검증 완료 보고서에 기록하고 visual diff 단계는 수행하지 않습니다.
    - 병렬 실행, 스크린샷 재사용, 롤백 기준 등 visual diff 세부 운영은 해당 워크플로우의 규칙을 따릅니다.
 
 6. **프리뷰 URL 제공 및 브라우저 오픈**:
-   - visual diff 단계가 끝나면 `@.ai/rules/development/expert-nuxt-preview.md` 규칙에 따라 사용자에게 프리뷰 URL을 제공합니다.
+   - visual diff 단계가 끝났거나 사용자가 visual diff를 보류/거부한 경우 `@.ai/rules/development/expert-nuxt-preview.md` 규칙에 따라 사용자에게 프리뷰 URL을 제공합니다.
    - 브라우저 오픈 전 확인 문구와 개발 서버 확인 절차는 preview 규칙을 따릅니다.

@@ -21,9 +21,9 @@ The AI acts strictly as the Strategic Orchestrator. Direct implementation of com
 2. **Route**: Map the request to the appropriate workflow (`/figma-to-code`, `/legacy-to-vue`, `/component-validation`, `/visual-diff`).
 3. **Execute**: Invoke specialized subagents explicitly from `@.ai/rules/development/` (e.g., `expert-figma-to-vue`, `expert-legacy-to-vue`, `expert-vue-scripting`, `expert-vue-tester`, `expert-nuxt-preview`, `expert-visual-diff`) or execute the triggered workflow.
    - [HARD] *Mandatory Sequential Workflow Chaining*: 컴포넌트 생성/수정 워크플로우는 반드시 다음 순서를 **모두** 완료해야 합니다. 어떤 단계도 건너뛸 수 없습니다:
-     1. **코드 생성** → 2. **검증 핸드오프** (`/component-validation`) → 3. **시각적 비교 교정** (`/visual-diff`) → 4. **프리뷰 URL 제공**
+     1. **코드 생성** → 2. **검증 핸드오프** (`/component-validation`) → 3. **사용자에게 visual diff 진행 여부 확인** → 4. **승인 시 시각적 비교 교정** (`/visual-diff`) 또는 보류/거부 기록 → 5. **프리뷰 URL 제공**
    - [HARD] *Validation Hand-off*: UI 컴포넌트 생성 또는 수정이 완료되면, **반드시** `/component-validation` 워크플로우(`@.agent/workflows/component-validation.md`)를 호출하여 QA 단계를 실행합니다. 이 단계를 건너뛰거나 생략하는 것은 **절대 금지**합니다.
-   - [HARD] *Visual Diff Correction*: 정적 검증이 통과된 후, **반드시** `/visual-diff` 워크플로우(`@.agent/workflows/visual-diff.md`)를 호출하여 시각적 비교 교정을 실행합니다. Figma 기준 이미지를 확보할 수 없는 경우에만 건너뛸 수 있으며, 그 사유를 리포트에 명시해야 합니다.
+   - [HARD] *Visual Diff Correction*: 정적 검증이 통과된 후, **반드시** 사용자에게 `/visual-diff` 진행 여부를 확인합니다. 사용자가 승인한 경우에만 `/visual-diff` 워크플로우(`@.agent/workflows/visual-diff.md`)를 호출하여 시각적 비교 교정을 실행합니다. Figma 기준 이미지는 Figma MCP `get_screenshot`으로만 확보할 수 있으며, 노드 정보 부족 또는 MCP 미사용으로 기준 이미지를 확보하지 못한 경우에만 건너뛸 수 있고 그 사유를 리포트에 명시해야 합니다.
    - [HARD] *CSS Integrity Gate*: 워크플로우 전 과정에서 `.vue` 파일을 저장하기 전, 반드시 `<style scoped>` 블록의 보존 여부와 모든 Tailwind 클래스의 무결성을 검증합니다. 검증 실패 시 저장을 중단하고 복원합니다.
 4. **Report**: Consolidate subagent execution results and format the final response.
    - *Final Deliverable*: If UI components were created, the Orchestrator MUST provide the dynamic Nuxt preview URL (e.g. `http://localhost:3000/preview/[ComponentName]`) to the user as a clickable link based on the `expert-nuxt-preview` rules.
