@@ -14,9 +14,12 @@ The AI acts strictly as the Strategic Orchestrator. Direct implementation of com
 1. **Analyze**: Assess complexity, scope, and extract technology keywords. Load relevant core skills on demand.
    - [HARD] *Component Work Selection*: At the first interaction of every new conversation, the Orchestrator MUST first present the following 3 work types in Korean (per the Language-Aware Responses rule). If the request is non-UI, collect a short "not applicable" confirmation and continue with normal routing:
      1. **Figma → Vue Component Implementation**: Create a new Vue component from a Figma design → `/figma-to-code` workflow
-     2. **Modify Existing Vue Component**: Edit an already-created `.vue` component → delegate directly to the relevant expert agent
+     2. **Modify Existing Vue Component**: Edit an already-created `.vue` component → delegate to the relevant expert agent, then continue through `/component-validation` and the required validation chain
      3. **Legacy → Vue Component Conversion**: Convert legacy HTML/CSS/JS code into a Vue component → `/legacy-to-vue` workflow
    - *Figma to Vue Conversion*: If the user selects option 1, the Orchestrator MUST route the request to the `/figma-to-code` workflow (`@.ai/workflows/figma-to-code.md`).
+   - *Existing Vue Component Modification*: If the user selects option 2, the Orchestrator MUST delegate to the relevant expert agent for the requested change, and after the code modification step MUST continue through `/component-validation`, visual diff approval, and preview delivery without skipping the validation chain.
+     - Route to `expert-figma-to-vue` for design-driven restyling, layout alignment, or Figma-derived component updates.
+     - Route to `expert-legacy-to-vue` for structure-heavy markup rewrites, legacy DOM/CSS/JS migration patterns, or HTML/CSS/JS-to-Vue style modifications.
    - *Legacy to Vue Conversion*: If the user selects option 3, the Orchestrator MUST route the request to the `/legacy-to-vue` workflow (`@.ai/workflows/legacy-to-vue.md`).
 2. **Route**: Map the request to the appropriate workflow (`/figma-to-code`, `/legacy-to-vue`, `/component-validation`, `/visual-diff`).
 3. **Execute**: Invoke specialized subagents explicitly from `@.ai/rules/development/` (e.g., `expert-figma-to-vue`, `expert-legacy-to-vue`, `expert-vue-scripting`, `expert-vue-tester`, `expert-nuxt-preview`, `expert-visual-diff`) or execute the triggered workflow.

@@ -23,7 +23,7 @@ description: 생성된 프론트엔드 UI 컴포넌트의 품질을 보장하기
    - `npm run lint` 기준이 0 에러가 아니면 다음 단계로 진행하지 않습니다.
 
 4. **피드백 처리**:
-   - **치명적 오류**: 결과를 원본 생성 에이전트(`expert-figma-to-vue` 또는 `expert-legacy-to-vue`)로 돌려 Self-Correction을 수행합니다. 수정 후에는 `expert-vue-tester`의 lint 게이트부터 다시 실행합니다.
+   - **치명적 오류**: 결과를 원본 생성 또는 수정 에이전트(`expert-figma-to-vue`, `expert-legacy-to-vue`, 또는 기존 컴포넌트 수정을 수행한 relevant expert agent)로 돌려 Self-Correction을 수행합니다. 수정 후에는 `expert-vue-tester`의 lint 게이트부터 다시 실행합니다.
    - **경미하거나 없음**: 생성 또는 갱신된 `.spec.ts` 파일을 저장하고 검증 완료 보고서를 출력합니다.
    - **[HARD] 이후 흐름은 `@.ai/rules/development/component-guardrails.md`의 validation chain guardrail을 따릅니다.**
 

@@ -48,6 +48,32 @@ describe('workflow integrity', () => {
 
     expect(readme).toContain('visual-diff 진행 여부 확인')
     expect(readme).toContain('보류 / 거부')
+    expect(readme).toContain('기존 Vue 컴포넌트 수정`도 코드 수정 후에는 동일하게 `component-validation`')
+    expect(readme).toContain('D5 --> V0')
+  })
+
+  it('keeps the existing component modification path inside the validation chain', () => {
+    const core = read('.ai/core.md')
+    const validationWorkflow = read('.ai/workflows/component-validation.md')
+
+    expect(core).toContain('Existing Vue Component Modification')
+    expect(core).toContain('MUST continue through `/component-validation`, visual diff approval, and preview delivery')
+    expect(core).toContain('Route to `expert-figma-to-vue` for design-driven restyling')
+    expect(core).toContain('Route to `expert-legacy-to-vue` for structure-heavy markup rewrites')
+    expect(validationWorkflow).toContain('원본 생성 또는 수정 에이전트')
+    expect(validationWorkflow).toContain('relevant expert agent')
+  })
+
+  it('keeps workflow loading instructions selective instead of enumerating all scripting modules', () => {
+    const figmaWorkflow = read('.ai/workflows/figma-to-code.md')
+    const legacyWorkflow = read('.ai/workflows/legacy-to-vue.md')
+    const typescriptRule = read('.ai/rules/language/typescript.md')
+
+    expect(figmaWorkflow).toContain('필요한 패턴 모듈만 1~2개 추가 로드')
+    expect(legacyWorkflow).toContain('필요한 패턴 모듈만 1~2개 로드')
+    expect(figmaWorkflow).toContain('canonical source인 `@.ai/rules/development/component-guardrails.md`')
+    expect(legacyWorkflow).toContain('canonical source인 `@.ai/rules/development/component-guardrails.md`')
+    expect(typescriptRule).toContain('Props And API Guardrail')
   })
 
   it('ships preview routes required by preview and visual diff workflows', () => {

@@ -56,10 +56,9 @@ description: 레거시 상호작용 변환 규칙과 패턴 확장 가이드 모
 ```
 
 ### 패턴 번호 규칙
-- `P01`~`P19`: 폼 및 입력 관련
-- `P20`~`P39`: UI 상태 전환 (탭, 아코디언, 모달 등)
-- `P40`~`P59`: 애니메이션 및 DOM 측정
-- `P60`~`P79`: 데이터 표시 및 연산
-- `P80`~`P99`: 네트워크/API 및 외부 연동
+- `P01`~`P06`: Forms (`patterns-forms.md`) — 폼 입력, 검증, 상태 전이
+- `P07`~`P10`: Interactive UI (`patterns-interactive-ui.md`) — 탭, 토글, 아코디언, CSS 애니메이션+JS 제어
+- `P11`~`P14`: Motion And Display (`patterns-motion-display.md`) — 데이터 표시, 모달 트리거, 무한 스크롤, 리사이즈
+- `P15`~: 신규 패턴은 소속 모듈 파일에 순차 번호로 추가합니다.
 
 > 현재 등록된 패턴: P01~P14 (총 14개)

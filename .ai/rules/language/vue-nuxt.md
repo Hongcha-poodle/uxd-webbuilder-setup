@@ -5,7 +5,7 @@
 ## 핵심 원칙
 - **Vue 3 Composition API**: 모든 컴포넌트는 `<script setup>` 구문을 사용해야 합니다. Options API는 사용하지 않습니다.
 - **Nuxt 4 Auto-imports**: Nuxt 4의 내장 기능을 활용하여 `ref`, `reactive`, `computed`, `watch` 등은 명시적으로 import하지 않습니다. 컴포넌트 또한 `~/components/` 내에 존재하므로 별도의 import 없이 템플릿에서 바로 사용합니다 (`nuxt.config.ts` 설정에 따라 prefix 없이 사용 가능).
-- **Props 정책**: 컴포넌트 자동 생성 결과물에서 `type Props`, `interface Props`, `defineProps`, `withDefaults(defineProps(...))` 패턴은 **필요한 경우에만 명시적으로 추가**합니다. 실제 입력 계약이 분명할 때는 사용할 수 있지만, 근거 없는 자동 추론이나 과도한 API 생성은 피합니다.
+- **[HARD] Props 생성 금지**: AI 자동 생성 결과물에서 `type Props`, `interface Props`, `defineProps`, `withDefaults(defineProps(...))` 패턴을 **일절 추가하지 않습니다**. Props 정의는 개발팀이 직접 추가하므로 AI가 생성하거나 추론해서는 안 됩니다.
 ## 컴포넌트 구조
 - 오직 Vue Single File Component (`.vue`)로 작성합니다.
 - 블록 순서: `<script setup lang="ts">` → `<template>` → `<style scoped>` 순으로 작성합니다.

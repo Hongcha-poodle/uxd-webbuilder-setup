@@ -14,7 +14,7 @@ description: Vue 컴포넌트의 인터랙션 및 스크립트 로직 구현을 
 3. **`any` 타입 금지**: 상태, 이벤트 핸들러 파라미터, 유틸리티 함수에는 명시적 타입을 부여합니다.
 4. **DOM 직접 조작 금지**: `document.querySelector`, `classList.add/remove`, 직접 style 변경은 금지합니다. 반응형 상태와 바인딩을 우선 사용합니다.
 5. **`template ref` 제한 사용**: DOM 측정, 포커스 제어, CSS custom property 제어처럼 반응형으로 대체할 수 없는 경우에만 사용합니다.
-6. **`Props` 정책**: `type Props`, `interface Props`, `defineProps`, `withDefaults(defineProps(...))` 패턴은 실제 입력 계약이 분명할 때만 명시적으로 추가합니다. 근거 없는 자동 추론이나 과도한 선언은 피합니다.
+6. **[HARD] Props/API 가드레일 상속**: Props 관련 제한은 `@.ai/rules/development/component-guardrails.md`의 Props And API Guardrail을 그대로 적용합니다.
 7. **부분 로드 우선**: 이 인덱스를 읽은 뒤, 아래 매핑표에서 필요한 모듈과 패턴만 추가로 로드합니다. 전체 패턴 모듈 동시 로드는 금지합니다.
 
 ## 컴포넌트 유형 판별 기준 (Component Type Decision)
@@ -41,8 +41,8 @@ description: Vue 컴포넌트의 인터랙션 및 스크립트 로직 구현을 
 | **Controlled (수동 구현)** | 부모가 `v-model`로 데이터를 제어해야 하는 경우 | `patterns-forms.md` | `P01`, 필요 시 `P03`, `P04` |
 | **Stateful** | 내부에 복잡한 상태 전이·유효성 검사가 존재하는 경우 | `patterns-forms.md` | `P02`, `P04`, `P05`, `P06` |
 | **Display** | 사용자 인터랙션 없이 데이터를 계산·표시하는 경우 | `patterns-motion-display.md` | `P11` |
-| **Interactive UI** | 탭, 아코디언, 캐러셀, 모달 트리거 등 UI 상태 전환이 주요 역할인 경우 | `patterns-interactive-ui.md` | `P07`, `P08`, `P09`, `P12`, 필요 시 `P14` |
-| **Animation** | CSS animation과 JS 제어가 결합된 경우 | `patterns-motion-display.md` | `P10`, `P13`, 필요 시 `patterns-interactive-ui.md`의 `P14` |
+| **Interactive UI** | 탭, 아코디언, 캐러셀, 모달 트리거 등 UI 상태 전환이 주요 역할인 경우 | `patterns-interactive-ui.md` + `patterns-motion-display.md` | `P07`, `P08`, `P09`(interactive-ui), `P12`(motion-display), 필요 시 `P14`(motion-display) |
+| **Animation** | CSS animation과 JS 제어가 결합된 경우 | `patterns-interactive-ui.md` + `patterns-motion-display.md` | `P10`(interactive-ui), `P13`(motion-display), 필요 시 `P14`(motion-display) |
 
 ## 모듈 로드 프로토콜 (Targeted Loading Protocol)
 
@@ -55,8 +55,8 @@ description: Vue 컴포넌트의 인터랙션 및 스크립트 로직 구현을 
 | 모듈 | 파일 | 포함 범위 |
 |------|------|----------|
 | Forms | `@.ai/rules/development/expert-vue-scripting/patterns-forms.md` | `P01`~`P06` |
-| Interactive UI | `@.ai/rules/development/expert-vue-scripting/patterns-interactive-ui.md` | `P07`~`P09`, `P12`, `P14` |
-| Motion And Display | `@.ai/rules/development/expert-vue-scripting/patterns-motion-display.md` | `P10`, `P11`, `P13` |
+| Interactive UI | `@.ai/rules/development/expert-vue-scripting/patterns-interactive-ui.md` | `P07`~`P10` |
+| Motion And Display | `@.ai/rules/development/expert-vue-scripting/patterns-motion-display.md` | `P11`~`P14` |
 | Interop And Extension | `@.ai/rules/development/expert-vue-scripting/interop-and-extension.md` | 레거시 상호작용 변환, TODO 규칙, 패턴 확장 |
 
 ## 기본 선택 규칙
@@ -64,7 +64,7 @@ description: Vue 컴포넌트의 인터랙션 및 스크립트 로직 구현을 
 - 단순 입력 폼: `patterns-forms.md`만 로드합니다.
 - 탭/아코디언/토글 UI: `patterns-interactive-ui.md`만 로드합니다.
 - 계산형 표시 컴포넌트: `patterns-motion-display.md`에서 `P11`만 로드합니다.
-- 롤링 배너/슬라이더: `patterns-motion-display.md`의 `P10` 또는 `P13`을 로드하고, 리사이즈가 있으면 `patterns-interactive-ui.md`의 `P14`를 추가합니다.
+- 롤링 배너/슬라이더: `patterns-interactive-ui.md`의 `P10`과 `patterns-motion-display.md`의 `P13`을 로드하고, 리사이즈가 있으면 `patterns-motion-display.md`의 `P14`를 추가합니다.
 - 레거시 JS 마이그레이션: 유형 판별 후 필요한 패턴 모듈 + `interop-and-extension.md`를 조합합니다.
 
 ## 품질 체크포인트

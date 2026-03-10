@@ -17,10 +17,11 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
 
 1. **컴포넌트 구조**:
    - 컴포넌트는 오직 SFC(Single File Component) 형식인 `.vue` 파일로만 작성합니다.
+   - 블록 순서는 반드시 `<script setup lang="ts">` → `<template>` → `<style scoped>` 순서를 따릅니다.
    - 항상 `<script setup lang="ts">`를 사용하여 구조를 잡습니다. (Nuxt 4의 auto-imports 활용)
 
 2. **공통 가드레일 적용**:
-   - `@.ai/rules/development/component-guardrails.md`를 기준으로 Props 정책, style preservation, partial edit, validation chain을 적용합니다.
+   - `@.ai/rules/development/component-guardrails.md`를 기준으로 Props 생성 금지, style preservation, partial edit, validation chain을 적용합니다.
    - 이벤트가 필요한 경우에만 `defineEmits` 제네릭 구문으로 최소 시그니처를 선언합니다.
 
 3. **스타일링 (Tailwind CSS)**:
@@ -99,7 +100,7 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
 - **컨텍스트 확인**: 새로 생성할 파일명과 컴포넌트 역할 파악.
 - **행동 지침**: 
   - 제공된 Figma 정보(스크린샷, JSON)를 바탕으로 전체 `.vue` 보일러플레이트를 작성합니다.
-  - `@.ai/rules/development/component-guardrails.md`의 Props guardrail을 적용합니다. 입력 계약이 명확하지 않으면 최소 `Emits` 중심으로 유지합니다.
+  - `@.ai/rules/development/component-guardrails.md`의 Props 생성 금지 guardrail을 적용합니다. 이벤트 알림만 최소 `Emits` 중심으로 유지합니다.
   - **인터랙션 구현이 필요한 경우**, 먼저 `@.ai/rules/development/expert-vue-scripting.md` 인덱스를 로드하고 해당 컴포넌트 유형(Controlled, Stateful, Display, Interactive UI, Animation)을 판별합니다. 이후 필요한 패턴 모듈만 선택 로드하여 적용합니다.
 
 ### B. 기존 컴포넌트 수정 (Existing Component Modification)

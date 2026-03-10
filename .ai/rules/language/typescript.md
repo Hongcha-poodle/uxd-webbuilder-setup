@@ -7,7 +7,7 @@
 - **`type` alias 우선**: 일반적으로 객체 정의 및 속성 맵핑 시에는 `interface` 대신 `type` alias 사용을 권장합니다.
 
 ## Vue 컴포넌트(SFC) 내 타이핑
-- **Props 정책**: 컴포넌트 자동 생성 결과물에서 `type Props`, `interface Props`, `defineProps`, `withDefaults(defineProps(...))` 패턴은 **필요한 경우에만 명시적으로 작성**합니다. 타입 계약이 명확한 경우 사용 가능하지만, 불필요한 자동 추론이나 과도한 선언은 피합니다.
+- Vue SFC의 Props/API 제한은 `@.ai/rules/development/component-guardrails.md`의 **Props And API Guardrail**을 canonical source로 따릅니다.
 - **Emits**: `defineEmits` 매크로는 외부 제네릭 타입 문법을 기반으로 이벤트 시그니처를 최소 범위로 정의합니다.
   ```typescript
   type Emits = {

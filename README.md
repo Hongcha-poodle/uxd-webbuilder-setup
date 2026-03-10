@@ -102,6 +102,7 @@ bash update-mac.sh
 3. `Legacy → Vue 컴포넌트 변환`
 
 UI 컴포넌트 작업이 아니면 `해당 없음`이라고 짧게 답하고 일반 작업으로 이어가면 됩니다.
+`기존 Vue 컴포넌트 수정`도 코드 수정 후에는 동일하게 `component-validation` → `visual-diff 진행 여부 확인` → 프리뷰 제공 순서를 따릅니다.
 
 디자이너가 주면 좋은 입력:
 - Figma Node URL 또는 Node ID
@@ -171,13 +172,15 @@ flowchart TD
     Start --> Select
 
     Select -- "1. Figma to Vue" --> F1["필요한 규칙만 로드\nfigma-to-code workflow"]
-    Select -- "2. 기존 Vue 수정" --> Direct["관련 에이전트에\n직접 위임"]
+    Select -- "2. 기존 Vue 수정" --> Direct["관련 에이전트에 위임\n기존 .vue 수정"]
     Select -- "3. Legacy to Vue" --> L1["필요한 규칙만 로드\nlegacy-to-vue workflow"]
 
     F1 --> F5[".vue 생성/수정 후 저장"]
+    Direct --> D5["기존 .vue 수정 후 저장"]
     L1 --> L6[".vue 변환/수정 후 저장"]
 
     F5 --> V0
+    D5 --> V0
     L6 --> V0
     V0["component-validation 호출\nexpert-vue-tester 기준 적용"]
     V0 --> V2["prepare/lint 판단 + 정적 분석\n필요 시 테스트 또는 QA 시나리오"]
@@ -190,7 +193,6 @@ flowchart TD
     VD -- "차이 발견" --> VD1["visual-diff 규칙에 따라 수정/롤백"]
     VD1 --> VD
     VD -- "일치 / 완료" --> V6
-    Direct --> Done(["완료"])
 
     style Start fill:#4f46e5,color:#fff,stroke:none
     style Select fill:#f59e0b,color:#fff,stroke:none
@@ -198,7 +200,6 @@ flowchart TD
     style Q1 fill:#0ea5e9,color:#fff,stroke:none
     style VD fill:#f97316,color:#fff,stroke:none
     style V6 fill:#10b981,color:#fff,stroke:none
-    style Done fill:#10b981,color:#fff,stroke:none
     style V3 fill:#ef4444,color:#fff,stroke:none
 ```
 
