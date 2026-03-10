@@ -17,8 +17,8 @@ git clone --quiet --depth 1 $repoUrl $tempDir
 if (-not (Test-Path "$targetPath\.ai")) {
     New-Item -ItemType Directory -Force -Path "$targetPath\.ai" | Out-Null
 }
-if (-not (Test-Path "$targetPath\.agent")) {
-    New-Item -ItemType Directory -Force -Path "$targetPath\.agent" | Out-Null
+if (-not (Test-Path "$targetPath\.agents")) {
+    New-Item -ItemType Directory -Force -Path "$targetPath\.agents" | Out-Null
 }
 if (-not (Test-Path "$targetPath\.github")) {
     New-Item -ItemType Directory -Force -Path "$targetPath\.github" | Out-Null
@@ -28,9 +28,9 @@ if (-not (Test-Path "$targetPath\.github")) {
 Write-Host "Copying .ai directory..."
 Copy-Item -Path "$tempDir\.ai\*" -Destination "$targetPath\.ai" -Recurse -Force
 
-# .agent 폴더 복사
-Write-Host "Copying .agent directory..."
-Copy-Item -Path "$tempDir\.agent\*" -Destination "$targetPath\.agent" -Recurse -Force
+# .agents 폴더 복사
+Write-Host "Copying .agents directory..."
+Copy-Item -Path "$tempDir\.agents\*" -Destination "$targetPath\.agents" -Recurse -Force
 
 # .github 폴더 복사
 Write-Host "Copying .github directory..."
@@ -39,6 +39,11 @@ Copy-Item -Path "$tempDir\.github\*" -Destination "$targetPath\.github" -Recurse
 # CLAUDE.md 복사
 Write-Host "Copying CLAUDE.md..."
 Copy-Item -Path "$tempDir\CLAUDE.md" -Destination "$targetPath\CLAUDE.md" -Force
+
+if (Test-Path "$tempDir\AGENTS.md") {
+    Write-Host "Copying AGENTS.md..."
+    Copy-Item -Path "$tempDir\AGENTS.md" -Destination "$targetPath\AGENTS.md" -Force
+}
 
 # 임시 폴더 삭제
 Remove-Item -Path $tempDir -Recurse -Force

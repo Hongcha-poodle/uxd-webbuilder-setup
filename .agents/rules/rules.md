@@ -1,4 +1,4 @@
-# GitHub Copilot Instructions
+# Google Antigravity Instructions
 
 > **CRITICAL**: Before executing any task, you MUST read and strictly adhere to `.ai/core.md` first.
 >

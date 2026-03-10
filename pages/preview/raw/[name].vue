@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const componentName = route.params.name as string
+let observer: ResizeObserver | undefined
 
 const DynamicComponent = defineAsyncComponent(() =>
   import(`~/components/${componentName}.vue`).catch(() => {
@@ -21,12 +22,16 @@ onMounted(() => {
     window.parent.postMessage({ type: 'preview-resize', height }, '*')
   }
 
-  const observer = new ResizeObserver(() => {
+  observer = new ResizeObserver(() => {
     sendHeight()
   })
 
   observer.observe(document.body)
   sendHeight()
+})
+
+onUnmounted(() => {
+  observer?.disconnect()
 })
 </script>
 

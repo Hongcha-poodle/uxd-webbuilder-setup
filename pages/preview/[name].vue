@@ -78,7 +78,7 @@ onUnmounted(() => {
         :min="360"
         :max="768"
         class="flex-1 h-1.5 accent-blue-500 cursor-pointer"
-      />
+      >
 
       <!-- Current Width Display -->
       <div class="flex items-center gap-1">
@@ -89,7 +89,7 @@ onUnmounted(() => {
           :max="768"
           class="w-14 bg-slate-700 text-white text-xs text-center rounded px-1.5 py-1 border border-slate-600 focus:border-blue-500 focus:outline-none"
           @blur="clampWidth"
-        />
+        >
         <span class="text-xs text-slate-400">px</span>
       </div>
     </div>

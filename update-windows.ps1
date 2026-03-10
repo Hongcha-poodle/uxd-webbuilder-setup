@@ -25,8 +25,8 @@ if ($LASTEXITCODE -ne 0) {
 if (-not (Test-Path "$targetPath\.ai")) {
     New-Item -ItemType Directory -Force -Path "$targetPath\.ai" | Out-Null
 }
-if (-not (Test-Path "$targetPath\.agent")) {
-    New-Item -ItemType Directory -Force -Path "$targetPath\.agent" | Out-Null
+if (-not (Test-Path "$targetPath\.agents")) {
+    New-Item -ItemType Directory -Force -Path "$targetPath\.agents" | Out-Null
 }
 if (-not (Test-Path "$targetPath\.github")) {
     New-Item -ItemType Directory -Force -Path "$targetPath\.github" | Out-Null
@@ -36,9 +36,9 @@ if (-not (Test-Path "$targetPath\.github")) {
 Write-Host "Updating .ai directory (orchestrator / core rules)..."
 Copy-Item -Path "$tempDir\.ai\*" -Destination "$targetPath\.ai" -Recurse -Force
 
-# .agent 폴더 업데이트 (에이전트 워크플로우)
-Write-Host "Updating .agent directory (agent workflows)..."
-Copy-Item -Path "$tempDir\.agent\*" -Destination "$targetPath\.agent" -Recurse -Force
+# .agents 폴더 업데이트 (에이전트 워크플로우)
+Write-Host "Updating .agents directory (agent workflows)..."
+Copy-Item -Path "$tempDir\.agents\*" -Destination "$targetPath\.agents" -Recurse -Force
 
 # .github 폴더 업데이트 (Copilot 지시 파일)
 Write-Host "Updating .github directory (Copilot instructions)..."

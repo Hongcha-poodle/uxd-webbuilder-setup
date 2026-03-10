@@ -14,7 +14,7 @@
             type="text" 
             placeholder="컴포넌트 이름 검색..."
             class="w-full pl-4 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-orange focus:border-transparent transition-all"
-          />
+          >
         </div>
         <div class="text-sm font-medium text-slate-500 whitespace-nowrap">
           검색된 컴포넌트: <span class="text-primary-orange font-bold">{{ filteredComponents.length }}</span>개
@@ -26,7 +26,7 @@
         <span class="text-4xl mb-4">🧩</span>
         <h3 class="text-xl font-bold text-slate-700 mb-2">컴포넌트가 없습니다</h3>
         <p class="text-slate-500 text-center max-w-md">
-          아직 <code>~/components</code> 폴더에 생성된 Vue 컴포넌트가 없거나,<br/>
+          아직 <code>~/components</code> 폴더에 생성된 Vue 컴포넌트가 없거나,<br>
           검색어와 일치하는 항목이 없습니다.
         </p>
       </div>

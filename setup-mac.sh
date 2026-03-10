@@ -13,20 +13,25 @@ git clone --quiet --depth 1 "$REPO_URL" "$TEMP_DIR"
 
 # 대상 폴더 생성
 mkdir -p "$TARGET_PATH/.ai"
-mkdir -p "$TARGET_PATH/.agent"
+mkdir -p "$TARGET_PATH/.agents"
 mkdir -p "$TARGET_PATH/.github"
 
 echo "Copying .ai directory..."
 cp -R "$TEMP_DIR/.ai/"* "$TARGET_PATH/.ai/"
 
-echo "Copying .agent directory..."
-cp -R "$TEMP_DIR/.agent/"* "$TARGET_PATH/.agent/"
+echo "Copying .agents directory..."
+cp -R "$TEMP_DIR/.agents/"* "$TARGET_PATH/.agents/"
 
 echo "Copying .github directory..."
 cp -R "$TEMP_DIR/.github/"* "$TARGET_PATH/.github/"
 
 echo "Copying CLAUDE.md..."
 cp "$TEMP_DIR/CLAUDE.md" "$TARGET_PATH/CLAUDE.md"
+
+if [ -f "$TEMP_DIR/AGENTS.md" ]; then
+  echo "Copying AGENTS.md..."
+  cp "$TEMP_DIR/AGENTS.md" "$TARGET_PATH/AGENTS.md"
+fi
 
 rm -rf "$TEMP_DIR"
 
