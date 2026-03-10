@@ -101,6 +101,8 @@ bash update-mac.sh
 2. `기존 Vue 컴포넌트 수정`
 3. `Legacy → Vue 컴포넌트 변환`
 
+UI 컴포넌트 작업이 아니면 `해당 없음`이라고 짧게 답하고 일반 작업으로 이어가면 됩니다.
+
 디자이너가 주면 좋은 입력:
 - Figma Node URL 또는 Node ID
 - 원하는 컴포넌트 이름(선택)
@@ -128,13 +130,21 @@ bash update-mac.sh
 
 ## 6. 워크플로우 쉽게 이해하기
 
+이 저장소의 기본 흐름은 아래처럼 단순합니다.
+
 - 상단(노란 박스): 어떤 작업인지 먼저 선택
 - 좌/우 분기: Figma 기반 생성 또는 Legacy 변환
-- 보라 박스: `lint + 타입 + 테스트` 검증
-- 주황 박스: Figma와 화면을 시각 비교(자동 교정)
+- 보라 박스: `expert-vue-tester` 기준으로 정적 검증 진행
+- 주황 박스: `visual-diff` 워크플로우 기준으로 시각 비교 교정
 - 마지막 초록 박스: 확인 링크 제공
 
-아래 flowchart는 실제 실행 순서를 그대로 보여줍니다.
+세부 실행 기준은 README에 반복하지 않고 아래 canonical 문서를 따릅니다.
+- `@.agent/workflows/component-validation.md`
+- `@.ai/rules/development/expert-vue-tester.md`
+- `@.agent/workflows/visual-diff.md`
+- `@.ai/rules/development/component-guardrails.md`
+
+아래 flowchart는 실제 실행 순서를 요약한 것입니다.
 
 ```mermaid
 flowchart TD
@@ -142,36 +152,24 @@ flowchart TD
     Select{"AI 오케스트레이터\n작업 유형 선택"}
     Start --> Select
 
-    Select -- "1. Figma to Vue" --> F1["규칙 로드\nexpert-figma-to-vue\nvue-nuxt / typescript / tailwind"]
-    Select -- "2. 기존 Vue 수정" --> Direct["해당 에이전트에\n직접 위임"]
-    Select -- "3. Legacy to Vue" --> L1["규칙 로드\nexpert-legacy-to-vue\nvue-nuxt / typescript / tailwind"]
+    Select -- "1. Figma to Vue" --> F1["필요한 규칙만 로드\nfigma-to-code workflow"]
+    Select -- "2. 기존 Vue 수정" --> Direct["관련 에이전트에\n직접 위임"]
+    Select -- "3. Legacy to Vue" --> L1["필요한 규칙만 로드\nlegacy-to-vue workflow"]
 
-    F1 --> F2{"Figma 데이터 수집"}
-    F2 -- "MCP 성공" --> F3["레이어명을 PascalCase\n파일명으로 확정"]
-    F2 -- "MCP 실패" --> F2a["Node ID / URL\n직접 요청"]
-    F2a --> F3
-    F3 --> F4[".vue 파일 생성\n사용자 리뷰"]
-    F4 --> F5["components/ 에 저장"]
-
-    L1 --> L2["소스 수집\n붙여넣기 or 파일 경로"]
-    L2 --> L3["사용자에게\nPascalCase 파일명 확인"]
-    L3 --> L4["HTML/CSS/JS 분석\n.vue SFC 변환"]
-    L4 --> L5["Dependencies Report 작성"]
-    L5 --> L6["사용자 리뷰\ncomponents/ 에 저장"]
+    F1 --> F5[".vue 생성/수정 후 저장"]
+    L1 --> L6[".vue 변환/수정 후 저장"]
 
     F5 --> V0
     L6 --> V0
-    V0["Lint 검사\nnuxt prepare → npm run lint\n0 에러 필수"]
-    V0 --> V1["규칙 로드\nexpert-vue-tester"]
-    V1 --> V2["타입 체크 + 정적 분석 +\n유닛 테스트 코드 작성"]
+    V0["component-validation 호출\nexpert-vue-tester 기준 적용"]
+    V0 --> V2["prepare/lint 판단 + 정적 분석\n필요 시 테스트 또는 QA 시나리오"]
     V2 --> V3{"에러 심각도 판단"}
-    V3 -- "심각" --> V4["원본 에이전트에 피드백\n자동 수정"]
+    V3 -- "심각" --> V4["원본 에이전트로 피드백\n수정 후 검증 재시작"]
     V4 --> V0
-    V3 -- "경미" --> V5[".spec.ts 저장"]
-    V5 --> VD{"Visual Diff\nFigma vs 브라우저 비교"}
-    VD -- "차이 발견" --> VD1["1개 이슈 수정\n(최대 5회, 2회 롤백 시 중단)"]
+    V3 -- "통과" --> VD["visual-diff 호출\n교정 루프 실행"]
+    VD -- "차이 발견" --> VD1["visual-diff 규칙에 따라 수정/롤백"]
     VD1 --> VD
-    VD -- "일치 / 완료" --> V6(["프리뷰 URL 제공\n브라우저 자동 오픈"])
+    VD -- "일치 / 완료" --> V6(["프리뷰 URL 제공\n브라우저 확인"])
     Direct --> Done(["완료"])
 
     style Start fill:#4f46e5,color:#fff,stroke:none
@@ -181,7 +179,6 @@ flowchart TD
     style V6 fill:#10b981,color:#fff,stroke:none
     style Done fill:#10b981,color:#fff,stroke:none
     style V3 fill:#ef4444,color:#fff,stroke:none
-    style F2 fill:#3b82f6,color:#fff,stroke:none
 ```
 
 ---
@@ -189,10 +186,12 @@ flowchart TD
 ## 7. 자주 쓰는 명령어만
 
 ```bash
-npm run dev      # 프리뷰 서버 실행 (작업 시작 전 항상 먼저 실행)
-npm run lint     # 코드 규칙 검사
-npm run test     # 테스트 실행
+npm run dev      # 프리뷰 서버 실행
+npm run lint     # 린트 수동 확인
+npm run test     # 테스트 수동 확인
 ```
+
+`npm run prepare`는 validation 단계에서 필요할 때만 실행하도록 설계되어 있습니다.
 
 ---
 

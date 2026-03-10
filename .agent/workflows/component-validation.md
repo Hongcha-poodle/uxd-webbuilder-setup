@@ -12,37 +12,25 @@ description: 생성된 프론트엔드 UI 컴포넌트의 품질을 보장하기
 ## Workflow Steps
 
 1. **규칙 로드**:
-   - `@.ai/rules/development/expert-vue-tester.md` 를 읽고 에이전트 페르소나와 검증 기준을 적용합니다.
+   - `@.ai/rules/development/expert-vue-tester.md`를 읽고 검증 게이트, 테스트 작성 조건, 출력 형식을 적용합니다.
 
-2. **검증 실행** → `expert-vue-tester` 위임:
-   - **Lint 검사 선행**: `.nuxt/` 디렉토리가 이미 존재하고 `nuxt.config.ts`가 마지막 prepare 이후 변경되지 않은 경우, `nuxt prepare`를 생략합니다. `.nuxt/` 디렉토리가 없거나 config 변경이 감지된 경우에만 실행합니다.
-   - `npm run lint`를 실행합니다. `@nuxt/eslint` 기반의 lint 에러가 0건이어야 다음 단계로 진행합니다.
-   - 에이전트의 "작업 유형별 워크플로우" 규칙에 따라 정적 분석(타입 체크)과 유닛 테스트 코드를 작성합니다.
+2. **검증 컨텍스트 전달**:
+   - 타겟 `.vue` 파일 경로와 생성 배경(Figma 구현인지, legacy 변환인지, 기존 컴포넌트 수정인지)을 정리해 `expert-vue-tester`에 전달합니다.
+   - `.nuxt/` 존재 여부, `nuxt.config.ts` 변경 여부, 기존 `.spec.ts` 파일 유무 등 검증에 필요한 현재 상태를 함께 전달합니다.
 
-3. **피드백 처리**:
-   - **에러가 심각한 경우**: 결과를 원본 생성 에이전트(`expert-figma-to-vue` 또는 `expert-legacy-to-vue`)에게 피드백하여 Self-Correction을 유도합니다. Self-Correction 완료 후 **반드시 lint 검사를 재실행**하여 통과를 확인합니다.
-   - **에러가 없거나 경미한 경우**: `.spec.ts` 파일을 프로젝트에 저장하고, 검증 완료 보고서를 출력합니다.
-   - **[HARD] 이 단계 완료 후 반드시 4단계(시각적 비교 교정)로 진행합니다. 검증 완료 보고서만 출력하고 프리뷰 URL을 바로 제공하는 것은 금지합니다.**
+3. **검증 실행** -> `expert-vue-tester` 위임:
+   - prepare/lint 실행 여부 판단, 정적 분석, 테스트 작성 또는 수동 QA 시나리오 제안은 `expert-vue-tester`의 기준을 그대로 따릅니다.
+   - `npm run lint` 기준이 0 에러가 아니면 다음 단계로 진행하지 않습니다.
 
-4. **[HARD] 시각적 비교 교정 (Visual Diff Correction — 필수 단계)**:
-   - 정적 검증이 통과된 후 **반드시** `/visual-diff` 워크플로우(`@.agent/workflows/visual-diff.md`)를 호출합니다. 이 단계를 건너뛰는 것은 **Abort Conditions에 해당하는 경우에만** 허용됩니다 (Figma 기준 이미지 확보 불가, 브라우저 스크린샷 캡처 수단 없음, 개발 서버 미실행 및 사용자 거부).
-   - **최적화 규칙**:
-     - 타겟 컴포넌트가 1개인 경우 즉시 실행합니다.
-     - 타겟 컴포넌트가 여러 개인 경우, **독립적인 컴포넌트는 병렬 실행**을 허용합니다 (부모-자식 관계가 없는 컴포넌트 간). 부모-자식 관계가 있는 경우에만 순차 실행합니다.
-     - **스크린샷 재사용**: 동일 iteration 내에서 이미 캡처한 브라우저 스크린샷이 있고, 해당 컴포넌트 파일이 캡처 이후 변경되지 않았다면 재캡처를 생략합니다.
-   - Figma 원본 디자인과 브라우저 렌더링을 비교하여 시각적 차이점을 자동 교정합니다.
-   - 교정 시 회귀 방지 안전장치가 적용됩니다:
-     - 한 번에 1개 이슈만 수정 (동일 카테고리 배치 수정 허용)
-     - 수정 후 악화 시 즉시 롤백
-     - 최대 5회 반복, 연속 2회 롤백 시 중단
-   - Figma 기준 이미지를 확보할 수 없는 경우 이 단계를 건너뛰고 프리뷰 URL 제공으로 진행합니다.
+4. **피드백 처리**:
+   - **치명적 오류**: 결과를 원본 생성 에이전트(`expert-figma-to-vue` 또는 `expert-legacy-to-vue`)로 돌려 Self-Correction을 수행합니다. 수정 후에는 `expert-vue-tester`의 lint 게이트부터 다시 실행합니다.
+   - **경미하거나 없음**: 생성 또는 갱신된 `.spec.ts` 파일을 저장하고 검증 완료 보고서를 출력합니다.
+   - **[HARD] 이후 흐름은 `@.ai/rules/development/component-guardrails.md`의 validation chain guardrail을 따릅니다.**
 
-5. **프리뷰 URL 제공 및 브라우저 오픈**:
-   - `@.ai/rules/development/expert-nuxt-preview.md` 규칙에 따라 사용자에게 브라우저 확인 링크를 제공합니다.
-   - `pages/preview/[name].vue` 라우터 구조가 없다면 스캐폴딩을 제안합니다.
-   - 검증이 완료된 후, 사용자에게 다음과 같이 묻습니다:
-     > "컴포넌트 제작과 검증이 모두 완료됐습니다. 로컬 주소(`http://localhost:3000/preview/[ComponentName]`)에서 바로 확인하시겠습니까?"
-   - 사용자가 동의하면 OS에 맞는 명령어로 브라우저를 자동으로 엽니다:
-     - **Windows**: `start http://localhost:3000/preview/[ComponentName]`
-     - **macOS / Linux**: `open http://localhost:3000/preview/[ComponentName]`
-   - 브라우저 오픈 명령 실행 전, 개발 서버(`npm run dev`)가 실행 중인지 포트 3000이 열려 있는지 확인합니다. 서버가 꺼져 있다면 먼저 서버를 실행하도록 안내합니다.
+5. **[HARD] 시각적 비교 교정으로 핸드오프**:
+   - 정적 검증이 통과되면 `@.ai/rules/development/component-guardrails.md`의 validation chain guardrail에 따라 **반드시** `/visual-diff` 워크플로우(`@.agent/workflows/visual-diff.md`)를 호출합니다.
+   - 병렬 실행, 스크린샷 재사용, 롤백 기준 등 visual diff 세부 운영은 해당 워크플로우의 규칙을 따릅니다.
+
+6. **프리뷰 URL 제공 및 브라우저 오픈**:
+   - visual diff 단계가 끝나면 `@.ai/rules/development/expert-nuxt-preview.md` 규칙에 따라 사용자에게 프리뷰 URL을 제공합니다.
+   - 브라우저 오픈 전 확인 문구와 개발 서버 확인 절차는 preview 규칙을 따릅니다.

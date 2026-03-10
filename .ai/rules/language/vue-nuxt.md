@@ -5,7 +5,7 @@
 ## 핵심 원칙
 - **Vue 3 Composition API**: 모든 컴포넌트는 `<script setup>` 구문을 사용해야 합니다. Options API는 사용하지 않습니다.
 - **Nuxt 4 Auto-imports**: Nuxt 4의 내장 기능을 활용하여 `ref`, `reactive`, `computed`, `watch` 등은 명시적으로 import하지 않습니다. 컴포넌트 또한 `~/components/` 내에 존재하므로 별도의 import 없이 템플릿에서 바로 사용합니다 (`nuxt.config.ts` 설정에 따라 prefix 없이 사용 가능).
-- **Props 자동 생성 금지**: 컴포넌트 자동 생성 결과물에서는 `type Props`, `interface Props`, `defineProps`, `withDefaults(defineProps(...))` 패턴을 생성하지 않습니다.
+- **Props 정책**: 컴포넌트 자동 생성 결과물에서 `type Props`, `interface Props`, `defineProps`, `withDefaults(defineProps(...))` 패턴은 **필요한 경우에만 명시적으로 추가**합니다. 실제 입력 계약이 분명할 때는 사용할 수 있지만, 근거 없는 자동 추론이나 과도한 API 생성은 피합니다.
 ## 컴포넌트 구조
 - 오직 Vue Single File Component (`.vue`)로 작성합니다.
 - 블록 순서: `<script setup lang="ts">` → `<template>` → `<style scoped>` 순으로 작성합니다.
@@ -62,7 +62,7 @@ assets/
 ## 이벤트 및 상태 관리
 - 상태 값은 `ref` (원시 타입) 또는 `reactive` (객체)를 명확하게 구분하여 사용합니다.
 - 전역 상태가 필요한 경우 `useState` 등의 Nuxt 내장 컴포지저블을 사용합니다.
-- 컴포넌트의 인터랙션 로직(폼 입력, 유효성 검사, 탭 전환, 아코디언, 애니메이션 제어 등) 구현 시에는 `@.ai/rules/development/expert-vue-scripting.md`에 정의된 스크립트 패턴 가이드를 참조합니다.
+- 컴포넌트의 인터랙션 로직(폼 입력, 유효성 검사, 탭 전환, 아코디언, 애니메이션 제어 등) 구현 시에는 먼저 `@.ai/rules/development/expert-vue-scripting.md` 인덱스로 유형을 판별한 뒤, 필요한 세부 패턴 모듈만 선택하여 참조합니다.
 
 ## Emit 명명 규칙
 

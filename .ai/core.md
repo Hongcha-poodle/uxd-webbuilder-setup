@@ -38,8 +38,8 @@ Do not list full agent capabilities here. Use the following heuristic decision t
 
 ## 4. Quality Gates & Safeguards
 - **LSP Quality Gates**: Zero errors, zero type errors, and zero lint errors are strictly required before finalizing the `run` phase. Configurations are managed in `@.ai/config/quality.yaml`.
-- **Language-Specific Rules**: Never apply general programming assumptions. All language, framework, and testing-specific guidelines (e.g., Go testing commands, Python formatting) MUST be loaded dynamically from `@.ai/rules/language/`.
-- **Development Agent Rules**: Specific subagent behavior and rules MUST be loaded from `@.ai/rules/development/`.
+- **Language-Specific Rules**: Never apply general programming assumptions. Only the language, framework, and testing-specific guidelines required for the active task step MUST be loaded dynamically from `@.ai/rules/language/`.
+- **Development Agent Rules**: Only the specific subagent behavior and rules required for the triggered workflow or current execution step MUST be loaded from `@.ai/rules/development/`.
 - **Conflict Prevention**: Analyze overlapping file access patterns and build dependency graphs prior to executing parallel file writes.
 
 ## 5. User Interaction & External Interfaces
@@ -49,5 +49,9 @@ Do not list full agent capabilities here. Use the following heuristic decision t
 
 ## 6. Progressive Disclosure & Advanced Architecture
 - **Token Optimization**: Follow the 3-level Progressive Disclosure system. Metadata is loaded initially; full Rule/Skill content is injected on-demand when triggers match. Available skills are located in `@.ai/skills/`.
+- **Bootstrap Contract**: At session start, load only `.ai/core.md` plus the minimum routing metadata needed to classify the request. Do not bulk-load `@.ai/rules/` at initialization.
+- **Always-Loaded Invariants**: Keep the following rules resident from `.ai/core.md`: Language-Aware Responses, First Interaction handling, Parallel Execution, Approach-First Development, mandatory workflow chaining, and quality gate thresholds.
+- **Targeted Rule Injection**: After routing, load only the rule files required for the current workflow, language, and agent. For large rule files, load the specific section or pattern needed instead of the entire file whenever possible.
+- **No Duplicate Restatement**: Workflow files should reference canonical rule files instead of restating long rule bodies unless the summary is required to prevent execution mistakes.
 - **Error Recovery**: Delegate integration errors to a DevOps expert agent and logic errors to a debug expert agent. Do not attempt infinite loops of self-correction.
 - **Agent Teams**: When the environment supports parallel agent execution, utilize team-based parallel phase execution.
