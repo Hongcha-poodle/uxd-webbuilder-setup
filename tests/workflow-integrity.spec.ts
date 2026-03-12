@@ -59,7 +59,8 @@ describe('workflow integrity', () => {
     expect(core).toContain('Existing Vue Component Modification')
     expect(core).toContain('MUST continue through `/component-validation`, visual diff approval, and preview delivery')
     expect(core).toContain('Route to `expert-figma-to-vue` for design-driven restyling')
-    expect(core).toContain('Route to `expert-legacy-to-vue` for structure-heavy markup rewrites')
+    expect(core).toContain('Route to a relevant expert agent for structure-heavy markup rewrites')
+    expect(core).not.toContain('Route to `expert-legacy-to-vue` for structure-heavy markup rewrites')
     expect(validationWorkflow).toContain('원본 생성 또는 수정 에이전트')
     expect(validationWorkflow).toContain('relevant expert agent')
   })
@@ -74,6 +75,18 @@ describe('workflow integrity', () => {
     expect(figmaWorkflow).toContain('canonical source인 `@.ai/rules/development/component-guardrails.md`')
     expect(legacyWorkflow).toContain('canonical source인 `@.ai/rules/development/component-guardrails.md`')
     expect(typescriptRule).toContain('Props And API Guardrail')
+  })
+
+  it('keeps the legacy workflow in save-before-validation mode', () => {
+    const legacyWorkflow = read('.ai/workflows/legacy-to-vue.md')
+    const legacyRule = read('.ai/rules/development/expert-legacy-to-vue.md')
+
+    expect(legacyWorkflow).toContain('저장이 완료되면')
+    expect(legacyWorkflow).toContain('Legacy 전용 handoff 패키지')
+    expect(legacyWorkflow).toContain('`componentPath`')
+    expect(legacyWorkflow).not.toContain('리뷰용으로 제공한 후, 승인 시')
+    expect(legacyRule).toContain('신규 Legacy → Vue 변환 전용')
+    expect(legacyRule).not.toContain('### B. 기존 컴포넌트 부분 수정')
   })
 
   it('ships preview routes required by preview and visual diff workflows', () => {

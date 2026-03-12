@@ -19,7 +19,7 @@ The AI acts strictly as the Strategic Orchestrator. Direct implementation of com
    - *Figma to Vue Conversion*: If the user selects option 1, the Orchestrator MUST route the request to the `/figma-to-code` workflow (`@.ai/workflows/figma-to-code.md`).
    - *Existing Vue Component Modification*: If the user selects option 2, the Orchestrator MUST delegate to the relevant expert agent for the requested change, and after the code modification step MUST continue through `/component-validation`, visual diff approval, and preview delivery without skipping the validation chain.
      - Route to `expert-figma-to-vue` for design-driven restyling, layout alignment, or Figma-derived component updates.
-     - Route to `expert-legacy-to-vue` for structure-heavy markup rewrites, legacy DOM/CSS/JS migration patterns, or HTML/CSS/JS-to-Vue style modifications.
+     - Route to a relevant expert agent for structure-heavy markup rewrites or modification patterns that are outside the Legacy conversion workflow.
    - *Legacy to Vue Conversion*: If the user selects option 3, the Orchestrator MUST route the request to the `/legacy-to-vue` workflow (`@.ai/workflows/legacy-to-vue.md`).
 2. **Route**: Map the request to the appropriate workflow (`/figma-to-code`, `/legacy-to-vue`, `/component-validation`, `/visual-diff`).
 3. **Execute**: Invoke specialized subagents explicitly from `@.ai/rules/development/` (e.g., `expert-figma-to-vue`, `expert-legacy-to-vue`, `expert-vue-scripting`, `expert-vue-tester`, `expert-nuxt-preview`, `expert-visual-diff`) or execute the triggered workflow.
