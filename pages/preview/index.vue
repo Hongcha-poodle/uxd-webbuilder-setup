@@ -40,11 +40,10 @@
           class="group block bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md hover:border-primary-orange transition-all duration-200"
         >
           <div class="p-6">
-            <div class="flex items-center justify-between mb-3">
-              <h2 class="text-lg font-bold text-slate-800 group-hover:text-primary-orange transition-colors truncate pr-2">
+            <div class="mb-3">
+              <h2 class="text-lg font-bold text-slate-800 group-hover:text-primary-orange transition-colors truncate">
                 {{ comp.name }}
               </h2>
-              <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">{{ comp.id }}</span>
             </div>
             <p class="text-xs text-slate-400 truncate" :title="comp.filePath">{{ comp.relativePath }}.vue</p>
           </div>

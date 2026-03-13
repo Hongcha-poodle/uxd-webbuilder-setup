@@ -22,7 +22,7 @@ npm install
 - AI orchestrator/rules: `.ai/`, `.agents/`, `.github/`, `CLAUDE.md`, `AGENTS.md`
 - preview/runtime scaffold: `pages/preview/*`, `utils/preview-resolver.ts`, `utils/legacy-dependency-audit.ts`
 - scaffold tests: `tests/workflow-integrity.spec.ts`, `tests/preview-resolver.spec.ts`, `tests/legacy-dependency-audit.spec.ts`
-- preview config and base directories: `nuxt.config.ts`, `assets/images`, `assets/icons`, `assets/fonts`, `components`
+- preview config and base directories: `nuxt.config.ts`, `assets/images`, `assets/icons`, `components`
 
 ---
 
@@ -104,7 +104,7 @@ bash update-mac.sh
 | `utils/legacy-dependency-audit.ts` | Legacy 변환 결과의 asset/module 감사 유틸 |
 | `tests/*.spec.ts` | workflow/resolver/dependency scaffold 검증 |
 | `nuxt.config.ts` | preview 동작에 필요한 Nuxt components 설정 |
-| `assets/images`, `assets/icons`, `assets/fonts`, `components` | preview/legacy 변환용 기본 디렉터리 구조 |
+| `assets/images`, `assets/icons`, `components` | preview/legacy 변환용 기본 디렉터리 구조 |
 
 ---
 
@@ -242,9 +242,10 @@ npm run test     # 오케스트레이터/워크플로우 무결성 테스트
 assets/
   images/   (png, jpg, webp)
   icons/    (svg)
-  fonts/    (font files)
   css/      (global css)
 ```
+
+폰트는 Pretendard CDN 웹폰트를 사용합니다.
 
 Legacy 변환 결과의 Dependencies Report는 최소 다음을 구분해야 합니다.
 - `Assets`: resolved assets / missing assets

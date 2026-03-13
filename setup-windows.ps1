@@ -15,7 +15,6 @@ $runtimeDirectories = @(
     "assets",
     "assets\images",
     "assets\icons",
-    "assets\fonts",
     "components"
 )
 
@@ -75,7 +74,7 @@ if (Test-Path "$tempDir\AGENTS.md") {
 
 # 기본 디렉터리 구조 보장
 Write-Host "Ensuring runtime asset directories..."
-foreach ($directory in @("assets\images", "assets\icons", "assets\fonts", "components")) {
+foreach ($directory in @("assets\images", "assets\icons", "components")) {
     New-Item -ItemType Directory -Force -Path (Join-Path $targetPath $directory) | Out-Null
 }
 

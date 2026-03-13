@@ -44,7 +44,6 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
      ├── css/      # 전역 스타일시트 (예: tailwind.css)
      ├── images/   # 래스터 이미지 (png, jpg, jpeg, webp, gif) — 파일명: kebab-case
      ├── icons/    # SVG 아이콘 파일 — 파일명: icon-[name].svg 형식 권장
-     └── fonts/    # 커스텀 폰트 파일
      ```
    - 예시: `import heroImage from '~/assets/images/hero-background.png'`
    - 예시: `import arrowIcon from '~/assets/icons/icon-arrow.svg'`
@@ -90,7 +89,7 @@ description: Figma 디자인을 Vue/Nuxt 컴포넌트로 변환하는 전문 에
 3. **에셋 전달 가이드 제공**: 디자인 내에 디자이너가 직접 다운로드해서 넣어야 할 이미지(png, jpg)나 커스텀 SVG 아이콘 등이 있을 경우, 아래 표준 폴더에 배치하도록 안내하고 컴포넌트 내 import 경로를 미리 안내합니다.
    - 래스터 이미지: `~/assets/images/` (파일명: kebab-case, 예: `hero-background.png`)
    - SVG 아이콘: `~/assets/icons/` (파일명: `icon-[name].svg`, 예: `icon-arrow.svg`)
-   - 커스텀 폰트: `~/assets/fonts/`
+   - 폰트는 Pretendard CDN 웹폰트 사용 기준으로 확인합니다.
 
 ## 작업 유형별 워크플로우 (Task Workflows)
 

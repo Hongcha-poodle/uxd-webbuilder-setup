@@ -30,7 +30,6 @@ mkdir -p "$TARGET_PATH/utils"
 mkdir -p "$TARGET_PATH/tests"
 mkdir -p "$TARGET_PATH/assets/images"
 mkdir -p "$TARGET_PATH/assets/icons"
-mkdir -p "$TARGET_PATH/assets/fonts"
 mkdir -p "$TARGET_PATH/components"
 
 # .ai 폴더 업데이트 (오케스트레이터, 코어 규칙)

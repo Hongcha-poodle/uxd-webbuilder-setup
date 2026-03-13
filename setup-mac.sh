@@ -21,7 +21,6 @@ mkdir -p "$TARGET_PATH/utils"
 mkdir -p "$TARGET_PATH/tests"
 mkdir -p "$TARGET_PATH/assets/images"
 mkdir -p "$TARGET_PATH/assets/icons"
-mkdir -p "$TARGET_PATH/assets/fonts"
 mkdir -p "$TARGET_PATH/components"
 
 echo "Copying .ai directory..."

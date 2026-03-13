@@ -42,7 +42,7 @@ onUnmounted(() => { ... })
 
 ## 에셋 참조 및 폴더 구조
 
-이미지, 아이콘, 폰트 등의 정적 에셋은 `~/assets/` 경로를 통해 참조하며, 아래 Vue/Nuxt 권장 폴더 구조를 준수합니다:
+이미지, 아이콘, 전역 스타일 등의 정적 에셋은 `~/assets/` 경로를 통해 참조하며, 아래 Vue/Nuxt 권장 폴더 구조를 준수합니다:
 
 ```
 assets/
@@ -51,7 +51,6 @@ assets/
 │             # 파일명 규칙: kebab-case (예: hero-background.png)
 ├── icons/    # SVG 아이콘 파일
 │             # 파일명 규칙: icon-[name].svg (예: icon-arrow.svg)
-└── fonts/    # 커스텀 폰트 파일
 ```
 
 - `<script setup>` 블록 안에서 에셋을 명시적으로 import하여 템플릿의 `:src` 등에 바인딩합니다.
