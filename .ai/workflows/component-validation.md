@@ -17,6 +17,7 @@ description: 생성된 프론트엔드 UI 컴포넌트의 품질을 보장하기
 2. **검증 컨텍스트 전달**:
    - 타겟 `.vue` 파일 경로와 생성 배경(Figma 구현인지, legacy 변환인지, 기존 컴포넌트 수정인지)을 정리해 `expert-vue-tester`에 전달합니다.
    - `.nuxt/` 존재 여부, `nuxt.config.ts` 변경 여부, 기존 `.spec.ts` 파일 유무 등 검증에 필요한 현재 상태를 함께 전달합니다.
+   - Legacy 변환 결과인 경우 `resolvedAssets`, `missingAssets`, `missingComponentDeps`, `unresolvedDependencies` 또는 동등한 의존성 상태 정보를 함께 전달합니다.
 
 3. **검증 실행** -> `expert-vue-tester` 위임:
    - prepare/lint 실행 여부 판단, 정적 분석, 테스트 작성 또는 수동 QA 시나리오 제안은 `expert-vue-tester`의 기준을 그대로 따릅니다.

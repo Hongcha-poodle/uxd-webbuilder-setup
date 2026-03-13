@@ -102,4 +102,42 @@ describe('workflow integrity', () => {
       expect(existsSync(resolve(repoRoot, filePath)), filePath).toBe(true)
     }
   })
+
+  it('keeps nested component auto-import enabled for preview and legacy outputs', () => {
+    const nuxtConfig = read('nuxt.config.ts')
+
+    expect(nuxtConfig).toContain("pattern: '**/*.vue'")
+  })
+
+  it('documents runtime scaffold updates consistently in setup docs and scripts', () => {
+    const readme = read('README.md')
+    const setupWindows = read('setup-windows.ps1')
+    const setupMac = read('setup-mac.sh')
+    const updateWindows = read('update-windows.ps1')
+    const updateMac = read('update-mac.sh')
+
+    expect(readme).toContain('pages/preview/*')
+    expect(readme).toContain('utils/preview-resolver.ts')
+    expect(readme).toContain('utils/legacy-dependency-audit.ts')
+    expect(readme).toContain('nuxt.config.ts')
+    expect(readme).toContain('덮어써질 수 있습니다')
+
+    expect(setupWindows).toContain('Copying preview scaffold...')
+    expect(setupWindows).toContain('preview-resolver.ts')
+    expect(setupWindows).toContain('legacy-dependency-audit.ts')
+    expect(setupWindows).toContain('nuxt.config.ts')
+
+    expect(setupMac).toContain('Copying preview scaffold...')
+    expect(setupMac).toContain('preview-resolver.ts')
+    expect(setupMac).toContain('legacy-dependency-audit.ts')
+    expect(setupMac).toContain('nuxt.config.ts')
+
+    expect(updateWindows).toContain('shared preview/runtime scaffold files')
+    expect(updateWindows).toContain('Updating preview scaffold...')
+    expect(updateWindows).toContain('Updating nuxt.config.ts...')
+
+    expect(updateMac).toContain('shared preview/runtime scaffold files')
+    expect(updateMac).toContain('Updating preview scaffold...')
+    expect(updateMac).toContain('Updating nuxt.config.ts...')
+  })
 })

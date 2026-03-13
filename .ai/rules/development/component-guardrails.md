@@ -58,6 +58,7 @@ validation 또는 visual diff 단계로 넘길 때 최소 다음 컨텍스트를
 - 사용된 커스텀 Tailwind 토큰 목록
 - CSS 변수 또는 디자인 토큰 매핑 정보
 - Tailwind arbitrary value 사용 내역
+- Legacy 변환인 경우 `resolvedAssets`, `missingAssets`, `missingComponentDeps`, `unresolvedDependencies`
 
 ## 7. Feedback Loop Contract
 

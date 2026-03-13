@@ -1,12 +1,20 @@
 <script setup lang="ts">
+import { createPreviewPath, decodePreviewComponentId, resolvePreviewComponent } from '~/utils/preview-resolver'
+
 const route = useRoute()
-const componentName = route.params.name as string
+const componentId = computed(() => {
+  const param = route.params.name
+  return Array.isArray(param) ? param.join('/') : String(param ?? '')
+})
+const componentModules = import.meta.glob('~/components/**/*.vue')
+const resolvedComponent = computed(() => resolvePreviewComponent(componentModules, componentId.value))
+const componentLabel = computed(() => resolvedComponent.value.entry?.relativePath ?? decodePreviewComponentId(componentId.value))
 
 const frameWidth = ref(360)
 const frameHeight = ref(640)
 const presets = [360, 390, 414, 768] as const
 
-const iframeSrc = computed(() => `/preview/raw/${componentName}`)
+const iframeSrc = computed(() => createPreviewPath('/preview/raw', componentId.value))
 
 const clampWidth = () => {
   frameWidth.value = Math.min(768, Math.max(360, frameWidth.value))
@@ -41,10 +49,13 @@ onUnmounted(() => {
           ← 목록으로
         </NuxtLink>
         <span class="font-bold text-lg border-r border-slate-600 pr-3">Nuxt Component Preview</span>
-        <span class="font-mono text-sm text-green-400">&lt;{{ componentName }} /&gt;</span>
+        <span class="font-mono text-sm text-green-400">&lt;{{ componentLabel }} /&gt;</span>
       </div>
       <div class="text-xs text-slate-400">
-        File: <code class="bg-slate-800 px-1 rounded">~/components/{{ componentName }}.vue</code>
+        File:
+        <code class="bg-slate-800 px-1 rounded">
+          {{ resolvedComponent.entry?.filePath ?? resolvedComponent.attemptedFilePaths[0] }}
+        </code>
       </div>
     </div>
 

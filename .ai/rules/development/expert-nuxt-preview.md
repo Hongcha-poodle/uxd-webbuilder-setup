@@ -16,17 +16,17 @@ description: 생성된 프론트엔드 UI 컴포넌트를 브라우저에서 동
 최초 요청 시 또는 프리뷰 환경이 없는 프로젝트에서 단 한 번 실행됩니다.
 - 목적: `pages/preview/[name].vue` 파일을 대상 프로젝트에 생성합니다.
 - 동작 로직:
-  - `defineAsyncComponent`를 이용하여 `~/components/${route.params.name}.vue`를 동적 마운트하는 템플릿을 생성.
-  - 못 찾을 경우 렌더링 에러를 뱉는 Fallback UI 구현 포함.
+  - `import.meta.glob('~/components/**/*.vue')`와 공통 resolver를 이용해 목록/상세 프리뷰가 동일한 컴포넌트 식별 규칙을 사용하도록 구성합니다.
+  - 못 찾을 경우 요청 식별자, 실제 해석 대상 경로, 가능한 원인을 보여주는 Fallback UI 구현을 포함합니다.
   - 상단 바(top bar)에는 반드시 **목록 복귀 버튼**을 포함할 것: `<NuxtLink to="/preview">← 목록으로</NuxtLink>`
 
 ### 2. Raw 프리뷰 페이지 설치 (Setup Raw Preview Page)
 Visual Diff 워크플로우(`@.ai/workflows/visual-diff.md`)에서 스크린샷 캡처 시 사용하는 순수 컴포넌트 렌더링 페이지입니다.
 - 목적: `pages/preview/raw/[name].vue` 파일을 대상 프로젝트에 생성합니다.
 - 동작 로직:
-  - `defineAsyncComponent`를 이용하여 `~/components/${route.params.name}.vue`를 동적 마운트합니다.
+  - `import.meta.glob('~/components/**/*.vue')`와 공통 resolver를 이용하여 실제 대상 컴포넌트를 동적 마운트합니다.
   - **상단 바, 목록 복귀 버튼 등 UI 크롬을 일체 포함하지 않습니다** — 순수 컴포넌트만 렌더링합니다.
-  - 못 찾을 경우 렌더링 에러를 뱉는 Fallback UI 구현 포함.
+  - 못 찾을 경우 요청 식별자, 실제 해석 대상 경로, 가능한 원인을 보여주는 Fallback UI 구현을 포함합니다.
 - 용도: `expert-visual-diff` 에이전트가 `http://localhost:3000/preview/raw/[ComponentName]`에서 브라우저 스크린샷을 캡처하여 Figma 원본과 비교합니다.
 
 ### 3. 프리뷰 안내 문구 제공 (URL Hand-off)

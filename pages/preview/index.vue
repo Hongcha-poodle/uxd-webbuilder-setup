@@ -33,10 +33,10 @@
 
       <!-- 컴포넌트 목록 그리드 -->
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <NuxtLink 
-          v-for="comp in filteredComponents" 
-          :key="comp.name"
-          :to="`/preview/${comp.name}`"
+        <NuxtLink
+          v-for="comp in filteredComponents"
+          :key="comp.id"
+          :to="createPreviewPath('/preview', comp.id)"
           class="group block bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md hover:border-primary-orange transition-all duration-200"
         >
           <div class="p-6">
@@ -44,9 +44,9 @@
               <h2 class="text-lg font-bold text-slate-800 group-hover:text-primary-orange transition-colors truncate pr-2">
                 {{ comp.name }}
               </h2>
-              <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">.vue</span>
+              <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">{{ comp.id }}</span>
             </div>
-            <p class="text-xs text-slate-400 truncate" :title="comp.path">{{ comp.path }}</p>
+            <p class="text-xs text-slate-400 truncate" :title="comp.filePath">{{ comp.relativePath }}.vue</p>
           </div>
           <div class="bg-slate-50 p-3 text-right border-t border-slate-100 text-sm font-medium text-slate-500 group-hover:text-primary-orange group-hover:bg-orange-50 transition-colors">
             프리뷰 보기 &rarr;
@@ -58,25 +58,10 @@
 </template>
 
 <script setup lang="ts">
-// Vite 기능을 사용하여 components 폴더의 모든 .vue 파일을 동적으로 가져옵니다.
+import { createPreviewComponentEntries, createPreviewPath } from '~/utils/preview-resolver'
+
 const componentModules = import.meta.glob('~/components/**/*.vue')
-
-interface ComponentInfo {
-  name: string
-  path: string
-}
-
-// 추출된 경로에서 컴포넌트 이름과 정보를 매핑
-const componentsList = computed<ComponentInfo[]>(() => {
-  return Object.keys(componentModules).map((filePath) => {
-    // 예: ~/components/Header/Nav.vue -> Nav
-    const fileName = filePath.split('/').pop()?.replace('.vue', '') || ''
-    return {
-      name: fileName,
-      path: filePath
-    }
-  }).sort((a, b) => a.name.localeCompare(b.name)) // 알파벳 순 정렬
-})
+const componentsList = computed(() => createPreviewComponentEntries(componentModules))
 
 const searchQuery = ref('')
 
@@ -84,9 +69,9 @@ const filteredComponents = computed(() => {
   const query = searchQuery.value.toLowerCase().trim()
   if (!query) return componentsList.value
   
-  return componentsList.value.filter(c => 
-    c.name.toLowerCase().includes(query) || 
-    c.path.toLowerCase().includes(query)
+  return componentsList.value.filter(c =>
+    c.name.toLowerCase().includes(query) ||
+    c.relativePath.toLowerCase().includes(query)
   )
 })
 </script>

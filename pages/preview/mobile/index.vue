@@ -19,12 +19,15 @@
     </div>
 
     <ul v-else class="divide-y divide-border-default">
-      <li v-for="comp in filteredComponents" :key="comp.name">
+      <li v-for="comp in filteredComponents" :key="comp.id">
         <NuxtLink
-          :to="`/preview/mobile/${comp.name}`"
+          :to="createPreviewPath('/preview/mobile', comp.id)"
           class="flex items-center justify-between px-5 py-4 active:bg-bg-light-gray transition-colors"
         >
-          <span class="text-sm font-medium text-text-primary">{{ comp.name }}</span>
+          <div class="min-w-0">
+            <span class="block text-sm font-medium text-text-primary truncate">{{ comp.name }}</span>
+            <span class="block text-xs text-text-placeholder truncate">{{ comp.relativePath }}.vue</span>
+          </div>
           <span class="text-text-placeholder text-xs">&rsaquo;</span>
         </NuxtLink>
       </li>
@@ -33,19 +36,10 @@
 </template>
 
 <script setup lang="ts">
+import { createPreviewComponentEntries, createPreviewPath } from '~/utils/preview-resolver'
+
 const componentModules = import.meta.glob('~/components/**/*.vue')
-
-interface ComponentInfo {
-  name: string
-  path: string
-}
-
-const componentsList = computed<ComponentInfo[]>(() => {
-  return Object.keys(componentModules).map((filePath) => {
-    const fileName = filePath.split('/').pop()?.replace('.vue', '') || ''
-    return { name: fileName, path: filePath }
-  }).sort((a, b) => a.name.localeCompare(b.name))
-})
+const componentsList = computed(() => createPreviewComponentEntries(componentModules))
 
 const searchQuery = ref('')
 
@@ -53,7 +47,8 @@ const filteredComponents = computed(() => {
   const query = searchQuery.value.toLowerCase().trim()
   if (!query) return componentsList.value
   return componentsList.value.filter(c =>
-    c.name.toLowerCase().includes(query)
+    c.name.toLowerCase().includes(query) ||
+    c.relativePath.toLowerCase().includes(query)
   )
 })
 </script>
